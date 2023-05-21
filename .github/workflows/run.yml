@@ -30,4 +30,9 @@ jobs:
         run: python script.py
 
       - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v4
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'github-action@example.com'
+          git add .
+          git commit -m "Get recent pastes"
+          git push

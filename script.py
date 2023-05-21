@@ -65,7 +65,7 @@ if __name__ == "__main__":
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 
 
-    with open(f"pastes/pastes_{timestamp}.csv", "w") as f:
+    with open(f"./pastes/pastes_{timestamp}.csv", "w") as f:
         writer = csv.writer(f)
         writer.writerow(["id", "title", "username", "language", "date", "content"])
         for p in pastes:
