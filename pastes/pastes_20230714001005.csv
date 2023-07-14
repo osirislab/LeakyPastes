@@ -1,0 +1,4703 @@
+id,title,username,language,date,content
+nv3AxUhu,webserver con formulario,teslariu,Python,Thursday 13th of July 2023 06:52:13 PM CDT,"#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+""""""
+alumnos = [
+	{'id':1, 'nombre':'Juan Carlos', 'cursos':5},
+	{'id':2, 'nombre':'Ana', 'cursos':3},
+]
+""""""
+alumnos = []
+
+# creo un formulario en html para subir datos
+formulario_html = """"""
+<!DOCTYPE html>
+<head><meta charset='utf-8'></head>
+<body>
+	<form method='POST'>
+		Nombre:
+		<input type='text' name='nombre'><br><br>
+		Cursos:
+		<input type='number' name='cursos' min=""1""><br>
+		<br><br>
+		<input type='submit' value='Enviar'>
+	</form>
+</body>
+</html>
+""""""
+
+def salida_html(mensaje):
+	return f""""""
+	<!doctype html>
+	<head>
+		<title>Enviado</title>
+		<meta http-equiv=""refresh"" content=""3"";URL=""http://localhost:5000/form"">
+	</head>
+	<body>{mensaje}</body>
+	</html>
+	""""""
+
+
+@app.route('/')
+def home():
+	return ""HOME""
+	
+@app.route('/alumnos', methods=['GET','POST','PUT','DELETE'])
+def alumno():
+	
+	if request.method == ""GET"":
+		return jsonify({'alumnos':alumnos})
+		
+	elif request.method == ""POST"":
+		if not alumnos:
+			id_alumno = 1
+		else:
+			id_alumno = alumnos[-1]['id'] + 1
+		alumno = {
+			'id': id_alumno,
+			'nombre': request.json['nombre'],
+			'cursos': request.json['cursos']
+		}
+		alumnos.append(alumno)
+		return jsonify(""Alumno añadido"")
+		
+	elif request.method == ""PUT"":
+		id_alumno = request.json['id']
+		for alumno in alumnos:
+			if id_alumno == alumno.get('id'):
+				if request.json['nombre'] is not None:
+					alumno['nombre'] = request.json['nombre']
+				if request.json['cursos'] is not None:
+					alumno['cursos'] = request.json['cursos']
+				return jsonify(""Datos modificados..."")
+		return jsonify(f""No se encontró alumno con id: {id_alumno}"")
+		
+	elif request.method == ""DELETE"":
+		id_alumno = request.json['id']
+		for alumno in alumnos:
+			if id_alumno == alumno.get('id'):
+				alumnos.remove(alumno)
+				return jsonify(""Alumno eliminado"")
+		return jsonify(f""No se encontró alumno con id: {id_alumno}"")
+		
+@app.route(""/alumnos/<int:i>"")
+def get_alumno(i):
+	try:
+		return jsonify({""alumno"":alumnos[i-1]})
+	except IndexError:
+		return jsonify(""Alumno inexistente"")
+		
+@app.route('/instructor')
+def get_instructor():
+	return ""Sección de instructores""
+	
+@app.route('/administrativo')
+def get_administrativo():
+	return ""<html><h1>EN CONSTRUCCION ...</h1></html>""
+
+@app.route('/form', methods=['GET','POST'])
+def formulario():
+	if request.method == ""GET"":
+		return formulario_html.encode('utf-8')
+	
+	elif request.method == ""POST"":
+		try:
+			body = dict(request.form) # los datos del formulario
+		except Exception:
+			mensaje = ""Datos erróneos""
+		else:
+			if body['nombre'] and body['cursos']:
+				if not alumnos:
+					id_alumno = 1
+				else:
+					id_alumno = alumnos[-1]['id'] + 1
+				print(f""""""
+				Datos del alumno añadido
+				------------------------
+				ID: {id_alumno}
+				Nombre: {body['nombre']}
+				Cursos: {body['cursos']}
+				------------------------
+				""""""
+				)
+				# guardo los datos
+				alumno = {
+					'id': id_alumno,
+					'nombre': body['nombre'],
+					'cursos': body['cursos'],
+				}
+				alumnos.append(alumno)
+				mensaje = ""Datos guardados""
+			else:
+				mensaje = ""Datos incompletos""
+				
+		finally:
+			return salida_html(mensaje).encode('utf-8')
+			
+
+
+	
+if __name__ == ""__main__"":
+	app.run(debug=True)
+	
+# LINUX
+# export FLASK_APP=webserver.py
+# flask run
+
+# WINDOWS
+# set FLASK_APP=webserver.py
+# python -m flask run
+		
+"
+HUxN2yUh,server sin formulario,teslariu,Python,Thursday 13th of July 2023 06:13:16 PM CDT,"#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+""""""
+alumnos = [
+	{'id':1, 'nombre':'Juan Carlos', 'cursos':5},
+	{'id':2, 'nombre':'Ana', 'cursos':3},
+]
+""""""
+alumnos = []
+
+@app.route('/')
+def home():
+	return ""HOME""
+	
+@app.route('/alumnos', methods=['GET','POST','PUT','DELETE'])
+def alumno():
+	
+	if request.method == ""GET"":
+		return jsonify({'alumnos':alumnos})
+		
+	elif request.method == ""POST"":
+		if not alumnos:
+			id_alumno = 1
+		else:
+			id_alumno = alumnos[-1]['id'] + 1
+		alumno = {
+			'id': id_alumno,
+			'nombre': request.json['nombre'],
+			'cursos': request.json['cursos']
+		}
+		alumnos.append(alumno)
+		return jsonify(""Alumno añadido"")
+		
+	elif request.method == ""PUT"":
+		id_alumno = request.json['id']
+		for alumno in alumnos:
+			if id_alumno == alumno.get('id'):
+				if request.json['nombre'] is not None:
+					alumno['nombre'] = request.json['nombre']
+				if request.json['cursos'] is not None:
+					alumno['cursos'] = request.json['cursos']
+				return jsonify(""Datos modificados..."")
+		return jsonify(f""No se encontró alumno con id: {id_alumno}"")
+		
+	elif request.method == ""DELETE"":
+		id_alumno = request.json['id']
+		for alumno in alumnos:
+			if id_alumno == alumno.get('id'):
+				alumnos.remove(alumno)
+				return jsonify(""Alumno eliminado"")
+		return jsonify(f""No se encontró alumno con id: {id_alumno}"")
+		
+@app.route(""/alumnos/<int:i>"")
+def get_alumno(i):
+	try:
+		return jsonify({""alumno"":alumnos[i-1]})
+	except IndexError:
+		return jsonify(""Alumno inexistente"")
+		
+@app.route('/instructor')
+def get_instructor():
+	return ""Sección de instructores""
+	
+@app.route('/administrativo')
+def get_administrativo():
+	return ""<html><h1>EN CONSTRUCCION ...</h1></html>""
+	
+if __name__ == ""__main__"":
+	app.run(debug=True)
+	
+# LINUX
+# export FLASK_APP=webserver.py
+# flask run
+
+# WINDOWS
+# set FLASK_APP=webserver.py
+# python -m flask run
+		
+"
+LLr2f4eL,Powershell Script,BusinessBurrito,PowerShell,Thursday 13th of July 2023 05:46:42 PM CDT,"Set-TimeZone -Name *Tonga* -PassThru
+Set-Date -Date ""02/29/2020 06:00""
+$secpasswd = ConvertTo-SecureString -String ""Password123"" -AsPlainText -Force
+New-LocalUser -FullName ""Scott Pilgrim"" -Name ""spilgrim"" -Password $secpasswd -PasswordNeverExpires
+Get-Service | Where-Object {$_.displayName.StartsWith(""W"")} | Out-File -FilePath ./W_Services.txt
+Get-History | Out-File ./CYB_300_History_FIRST_LAST.txt
+$wshell = New-Object -ComObject Wscript.Shell
+$wshell.Popup(""The things have been thung."",0,""Done"",0x1"
+sUggQ7D6,BurnerBatteryController,Shterman,Lua,Thursday 13th of July 2023 05:38:34 PM CDT,"local sleepTimer = 1
+
+local redLeft = false
+local redBack = false
+local redRight = false
+
+while true do
+    redLeft = redstone.getInput(""left"")
+    redBack = redstone.getInput(""back"")
+    redRight = redstone.getInput(""right"")
+
+    if (redLeft or redBack or redRight) then
+        print(""Batteries not Full"")
+        redstone.setOutput(""front"", true)
+    else
+        print(""Batteries are Full"")
+        redstone.setOutput(""front"", false)
+    end
+
+    sleep(sleepTimer)
+end"
+xBEUbHCs,dwm process owner,Ubidibity,PowerShell,Thursday 13th of July 2023 05:21:06 PM CDT,"Get-WmiObject -Query ""SELECT * FROM Win32_Process WHERE Name = 'dwm.exe'"" | ForEach-Object {
+    $owner = $_.GetOwner()
+    $username = $owner.User
+    $domain = $owner.Domain
+    Write-Output ""Process ID: $($_.ProcessId), User: $domain\$username""
+}
+
+try two:
+# Get all dwm.exe processes
+$dwms = Get-Process -Name dwm -ErrorAction SilentlyContinue
+
+# Loop through the dwm.exe processes
+foreach ($dwm in $dwms) {
+    $processId = $dwm.Id
+    $owner = $null
+
+    # Try to get the owner of the process using Get-WmiObject
+    $process = Get-WmiObject -Class Win32_Process | Where-Object { $_.ProcessId -eq $processId } -ErrorAction SilentlyContinue
+
+    if ($process) {
+        $owner = $process.GetOwner()
+    }
+
+    # If Get-WmiObject failed or didn't provide the owner, try using Get-Process
+    if (-not $owner) {
+        $owner = $dwm | Select-Object -ExpandProperty UserName
+    }
+
+    Write-Output ""Process ID: $processId, User: $owner""
+}
+
+try three:
+# Get all dwm.exe processes
+$dwms = Get-Process -Name dwm -ErrorAction SilentlyContinue
+
+# Loop through the dwm.exe processes
+foreach ($dwm in $dwms) {
+    $processId = $dwm.Id
+    $owner = $null
+
+    # Try to get the owner of the process using Get-WmiObject
+    $process = Get-WmiObject -Class Win32_Process | Where-Object { $_.ProcessId -eq $processId } -ErrorAction SilentlyContinue
+
+    if ($process) {
+        $owner = $process.GetOwner() | Select-Object -ExpandProperty User
+    }
+
+    # If Get-WmiObject failed or didn't provide the owner, try using Get-Process
+    if (-not $owner) {
+        $owner = ($dwm | Get-Process | Select-Object -ExpandProperty UserName) -replace "".*\\""
+    }
+
+    Write-Output ""Process ID: $processId, User: $owner""
+}"
+E6HEVuYm,WEBNET_5G,Webnetjoao,JSON,Thursday 13th of July 2023 05:11:29 PM CDT,"{
+  ""Version"": ""6"",
+  ""UrlUpdate"": ""https://pastebin.com/raw/E6HEVuYm"",
+  ""Sms"": ""https://painel.unyserve.com.br/4g/sms.php"",
+  ""Feedback"": ""https://wa.me/5514997993100"",
+  ""LogoUrl"": ""https://imagem.app/image/images.bXJ9KT,
+  ""FundoUrl"": ""https://images.hdqwalls.com/download/a-moment-of-stillness-sj-1080x1920.jpg"",
+  ""ContatoUrl"": ""https://wa.me/5514997993100"",
+  ""SiteUrl"": ""https://painelwebnetbr.online/login.php"",
+  ""MenuImg"": ""https://i.imgur.com/e7I6PZM.png"",
+  ""LogsImg"": ""https://i.imgur.com/XbnQ4Xu.png"",
+  ""Servers"": [
+    {
+      ""Name"": ""🟣 VIVO 01"",
+      ""ServerIP"": ""br.smnetbr.xyz"",
+      ""ServerPort"": ""22"",
+      ""Payload"": ""[delay_split][lf]GET / HTTP/1.1[lf]Host: portal.vivo.com.br"",
+      ""ProxyIP"": ""209.14.68.74"",
+      ""ProxyPort"": ""8080"",
+      ""SNI"": """",
+      ""USER"": """",
+      ""PASS"": """",
+      ""CheckUser"": ""http://209.14.68.74:5454/checkUser"",
+      ""Info"": ""Proxy""
+    },
+   {
+      ""Name"": ""TIM | [02]"",
+      ""ServerIP"": ""brasil.unyserve.com.br"",
+      ""ServerPort"": ""22"",
+      ""Payload"": ""ACL http://1.1.1.1rotate=buzzfeed.com;mobile.adobe.com;1.0.0.5 HTTP/1.1[crlf]Host: http://1.1.1.1rotate=buzzfeed.com;myspace.com;mobile.google.com;1.0.0.5[crlf]"",
+      ""ProxyIP"": ""149.78.185.152"",
+      ""ProxyPort"": ""80"",
+      ""SNI"": """",
+      ""USER"": """",
+      ""PASS"": """",
+      ""CheckUser"": ""http://149.78.185.152:5454/checkUser"",
+      ""Info"": ""Proxy""
+  
+    }
+  ]
+}"
+0pLfrXgW,lbas_coop_custom.nut,Tonblader,C++,Thursday 13th of July 2023 05:08:02 PM CDT,"printl( ""VScript: Initiating lbas_coop_custom script"" );
+
+// This setup causes 1 more tank to spawn in each tank-round up to the maximum tank limit specified in this code.
+// In this case, the limit will be 16 tanks.
+
+////////////
+// Case 1 //
+////////////
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case1_second_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_left,SpawnZombie,tank"",
+            o2 = ""Case1_third_tank_spawn,Enable,,1"",
+			o3 = ""Case2_third_tank_spawn,Enable,,1"",
+			o4 = ""Case3_third_tank_spawn,Enable,,1"",
+			o5 = ""Case4_third_tank_spawn,Enable,,1"",
+			o6 = ""Case5_third_tank_spawn,Enable,,1"",
+			o7 = ""Case6_third_tank_spawn,Enable,,1"",
+            o8 = ""Case1_third_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case1_third_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_left,SpawnZombie,tank""
+            o2 = ""Case1_fourth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fourth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fourth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fourth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fourth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fourth_tank_spawn,Enable,,1"",
+            o8 = ""Case1_fourth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case1_fourth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_left,SpawnZombie,tank""
+            o2 = ""Case1_fifth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fifth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fifth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fifth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fifth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fifth_tank_spawn,Enable,,1"",
+            o8 = ""Case1_fifth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case1_fifth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_left,SpawnZombie,tank""
+            o2 = ""Case1_sixth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_sixth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_sixth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_sixth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_sixth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_sixth_tank_spawn,Enable,,1"",
+            o8 = ""Case1_sixth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case1_sixth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_left,SpawnZombie,tank""
+            o2 = ""Case1_seventh_tank_spawn,Enable,,1"",
+			o3 = ""Case2_seventh_tank_spawn,Enable,,1"",
+			o4 = ""Case3_seventh_tank_spawn,Enable,,1"",
+			o5 = ""Case4_seventh_tank_spawn,Enable,,1"",
+			o6 = ""Case5_seventh_tank_spawn,Enable,,1"",
+			o7 = ""Case6_seventh_tank_spawn,Enable,,1"",
+            o8 = ""Case1_seventh_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case1_seventh_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_left,SpawnZombie,tank""
+            o2 = ""Case1_eighth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_eighth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_eighth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_eighth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_eighth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_eighth_tank_spawn,Enable,,1"",
+            o8 = ""Case1_eighth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case1_eighth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_left,SpawnZombie,tank""
+            o2 = ""Case1_nineth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_nineth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_nineth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_nineth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_nineth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_nineth_tank_spawn,Enable,,1"",
+            o8 = ""Case1_nineth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case1_nineth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_left,SpawnZombie,tank""
+            o2 = ""Case1_tenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_tenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_tenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_tenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_tenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_tenth_tank_spawn,Enable,,1"",
+            o8 = ""Case1_tenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case1_tenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_left,SpawnZombie,tank""
+            o2 = ""Case1_eleventh_tank_spawn,Enable,,1"",
+			o3 = ""Case2_eleventh_tank_spawn,Enable,,1"",
+			o4 = ""Case3_eleventh_tank_spawn,Enable,,1"",
+			o5 = ""Case4_eleventh_tank_spawn,Enable,,1"",
+			o6 = ""Case5_eleventh_tank_spawn,Enable,,1"",
+			o7 = ""Case6_eleventh_tank_spawn,Enable,,1"",
+            o8 = ""Case1_eleventh_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case1_eleventh_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_left,SpawnZombie,tank""
+            o2 = ""Case1_twelfth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_twelfth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_twelfth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_twelfth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_twelfth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_twelfth_tank_spawn,Enable,,1"",
+            o8 = ""Case1_twelfth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case1_twelfth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_left,SpawnZombie,tank""
+            o2 = ""Case1_thirteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_thirteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_thirteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_thirteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_thirteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_thirteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case1_thirteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case1_thirteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_left,SpawnZombie,tank""
+            o2 = ""Case1_fourteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fourteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fourteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fourteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fourteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fourteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case1_fourteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case1_fourteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_left,SpawnZombie,tank""
+            o2 = ""Case1_fifteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fifteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fifteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fifteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fifteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fifteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case1_fifteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case1_fifteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_left,SpawnZombie,tank""
+            o2 = ""Case1_sixteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_sixteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_sixteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_sixteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_sixteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_sixteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case1_sixteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case1_sixteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_left,SpawnZombie,tank""
+        }
+    }
+});
+
+////////////
+// Case 2 //
+////////////
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case2_second_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_left,SpawnZombie,tank"",
+            o2 = ""Case1_third_tank_spawn,Enable,,1"",
+			o3 = ""Case2_third_tank_spawn,Enable,,1"",
+			o4 = ""Case3_third_tank_spawn,Enable,,1"",
+			o5 = ""Case4_third_tank_spawn,Enable,,1"",
+			o6 = ""Case5_third_tank_spawn,Enable,,1"",
+			o7 = ""Case6_third_tank_spawn,Enable,,1"",
+            o8 = ""Case2_third_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case2_third_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_left,SpawnZombie,tank""
+            o2 = ""Case1_fourth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fourth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fourth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fourth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fourth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fourth_tank_spawn,Enable,,1"",
+            o8 = ""Case2_fourth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case2_fourth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_left,SpawnZombie,tank""
+            o2 = ""Case1_fifth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fifth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fifth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fifth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fifth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fifth_tank_spawn,Enable,,1"",
+            o8 = ""Case2_fifth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case2_fifth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_left,SpawnZombie,tank""
+            o2 = ""Case1_sixth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_sixth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_sixth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_sixth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_sixth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_sixth_tank_spawn,Enable,,1"",
+            o8 = ""Case2_sixth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case2_sixth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_left,SpawnZombie,tank""
+            o2 = ""Case1_seventh_tank_spawn,Enable,,1"",
+			o3 = ""Case2_seventh_tank_spawn,Enable,,1"",
+			o4 = ""Case3_seventh_tank_spawn,Enable,,1"",
+			o5 = ""Case4_seventh_tank_spawn,Enable,,1"",
+			o6 = ""Case5_seventh_tank_spawn,Enable,,1"",
+			o7 = ""Case6_seventh_tank_spawn,Enable,,1"",
+            o8 = ""Case2_seventh_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case2_seventh_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_left,SpawnZombie,tank""
+            o2 = ""Case1_eighth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_eighth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_eighth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_eighth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_eighth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_eighth_tank_spawn,Enable,,1"",
+            o8 = ""Case2_eighth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case2_eighth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_left,SpawnZombie,tank""
+            o2 = ""Case1_nineth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_nineth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_nineth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_nineth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_nineth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_nineth_tank_spawn,Enable,,1"",
+            o8 = ""Case2_nineth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case2_nineth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_left,SpawnZombie,tank""
+            o2 = ""Case1_tenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_tenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_tenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_tenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_tenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_tenth_tank_spawn,Enable,,1"",
+            o8 = ""Case2_tenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case2_tenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_left,SpawnZombie,tank""
+            o2 = ""Case1_eleventh_tank_spawn,Enable,,1"",
+			o3 = ""Case2_eleventh_tank_spawn,Enable,,1"",
+			o4 = ""Case3_eleventh_tank_spawn,Enable,,1"",
+			o5 = ""Case4_eleventh_tank_spawn,Enable,,1"",
+			o6 = ""Case5_eleventh_tank_spawn,Enable,,1"",
+			o7 = ""Case6_eleventh_tank_spawn,Enable,,1"",
+            o8 = ""Case2_eleventh_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case2_eleventh_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_left,SpawnZombie,tank""
+            o2 = ""Case1_twelfth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_twelfth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_twelfth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_twelfth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_twelfth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_twelfth_tank_spawn,Enable,,1"",
+            o8 = ""Case2_twelfth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case2_twelfth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_left,SpawnZombie,tank""
+            o2 = ""Case1_thirteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_thirteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_thirteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_thirteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_thirteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_thirteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case2_thirteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case2_thirteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_left,SpawnZombie,tank""
+            o2 = ""Case1_fourteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fourteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fourteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fourteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fourteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fourteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case2_fourteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case2_fourteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_left,SpawnZombie,tank""
+            o2 = ""Case1_fifteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fifteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fifteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fifteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fifteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fifteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case2_fifteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case2_fifteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_left,SpawnZombie,tank""
+            o2 = ""Case1_sixteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_sixteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_sixteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_sixteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_sixteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_sixteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case2_sixteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case2_sixteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_left,SpawnZombie,tank""
+        }
+    }
+});
+
+////////////
+// Case 3 //
+////////////
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case3_second_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_right,SpawnZombie,tank"",
+            o2 = ""Case1_third_tank_spawn,Enable,,1"",
+			o3 = ""Case2_third_tank_spawn,Enable,,1"",
+			o4 = ""Case3_third_tank_spawn,Enable,,1"",
+			o5 = ""Case4_third_tank_spawn,Enable,,1"",
+			o6 = ""Case5_third_tank_spawn,Enable,,1"",
+			o7 = ""Case6_third_tank_spawn,Enable,,1"",
+            o8 = ""Case3_third_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case3_third_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_right,SpawnZombie,tank""
+            o2 = ""Case1_fourth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fourth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fourth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fourth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fourth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fourth_tank_spawn,Enable,,1"",
+            o8 = ""Case3_fourth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case3_fourth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_right,SpawnZombie,tank""
+            o2 = ""Case1_fifth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fifth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fifth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fifth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fifth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fifth_tank_spawn,Enable,,1"",
+            o8 = ""Case3_fifth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case3_fifth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_right,SpawnZombie,tank""
+            o2 = ""Case1_sixth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_sixth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_sixth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_sixth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_sixth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_sixth_tank_spawn,Enable,,1"",
+            o8 = ""Case3_sixth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case3_sixth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_right,SpawnZombie,tank""
+            o2 = ""Case1_seventh_tank_spawn,Enable,,1"",
+			o3 = ""Case2_seventh_tank_spawn,Enable,,1"",
+			o4 = ""Case3_seventh_tank_spawn,Enable,,1"",
+			o5 = ""Case4_seventh_tank_spawn,Enable,,1"",
+			o6 = ""Case5_seventh_tank_spawn,Enable,,1"",
+			o7 = ""Case6_seventh_tank_spawn,Enable,,1"",
+            o8 = ""Case3_seventh_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case3_seventh_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_right,SpawnZombie,tank""
+            o2 = ""Case1_eighth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_eighth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_eighth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_eighth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_eighth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_eighth_tank_spawn,Enable,,1"",
+            o8 = ""Case3_eighth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case3_eighth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_right,SpawnZombie,tank""
+            o2 = ""Case1_nineth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_nineth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_nineth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_nineth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_nineth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_nineth_tank_spawn,Enable,,1"",
+            o8 = ""Case3_nineth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case3_nineth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_right,SpawnZombie,tank""
+            o2 = ""Case1_tenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_tenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_tenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_tenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_tenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_tenth_tank_spawn,Enable,,1"",
+            o8 = ""Case3_tenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case3_tenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_right,SpawnZombie,tank""
+            o2 = ""Case1_eleventh_tank_spawn,Enable,,1"",
+			o3 = ""Case2_eleventh_tank_spawn,Enable,,1"",
+			o4 = ""Case3_eleventh_tank_spawn,Enable,,1"",
+			o5 = ""Case4_eleventh_tank_spawn,Enable,,1"",
+			o6 = ""Case5_eleventh_tank_spawn,Enable,,1"",
+			o7 = ""Case6_eleventh_tank_spawn,Enable,,1"",
+            o8 = ""Case3_eleventh_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case3_eleventh_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_right,SpawnZombie,tank""
+            o2 = ""Case1_twelfth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_twelfth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_twelfth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_twelfth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_twelfth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_twelfth_tank_spawn,Enable,,1"",
+            o8 = ""Case3_twelfth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case3_twelfth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_right,SpawnZombie,tank""
+            o2 = ""Case1_thirteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_thirteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_thirteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_thirteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_thirteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_thirteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case3_thirteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case3_thirteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_right,SpawnZombie,tank""
+            o2 = ""Case1_fourteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fourteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fourteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fourteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fourteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fourteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case3_fourteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case3_fourteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_right,SpawnZombie,tank""
+            o2 = ""Case1_fifteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fifteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fifteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fifteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fifteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fifteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case3_fifteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case3_fifteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_right,SpawnZombie,tank""
+            o2 = ""Case1_sixteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_sixteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_sixteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_sixteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_sixteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_sixteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case3_sixteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case3_sixteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_buildings_right,SpawnZombie,tank""
+        }
+    }
+});
+
+////////////
+// Case 4 //
+////////////
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case4_second_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_hotel_left,SpawnZombie,tank"",
+            o2 = ""Case1_third_tank_spawn,Enable,,1"",
+			o3 = ""Case2_third_tank_spawn,Enable,,1"",
+			o4 = ""Case3_third_tank_spawn,Enable,,1"",
+			o5 = ""Case4_third_tank_spawn,Enable,,1"",
+			o6 = ""Case5_third_tank_spawn,Enable,,1"",
+			o7 = ""Case6_third_tank_spawn,Enable,,1"",
+            o8 = ""Case4_third_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case4_third_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_hotel_left,SpawnZombie,tank""
+            o2 = ""Case1_fourth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fourth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fourth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fourth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fourth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fourth_tank_spawn,Enable,,1"",
+            o8 = ""Case4_fourth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case4_fourth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_hotel_left,SpawnZombie,tank""
+            o2 = ""Case1_fifth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fifth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fifth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fifth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fifth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fifth_tank_spawn,Enable,,1"",
+            o8 = ""Case4_fifth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case4_fifth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_hotel_left,SpawnZombie,tank""
+            o2 = ""Case1_sixth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_sixth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_sixth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_sixth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_sixth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_sixth_tank_spawn,Enable,,1"",
+            o8 = ""Case4_sixth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case4_sixth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_hotel_left,SpawnZombie,tank""
+            o2 = ""Case1_seventh_tank_spawn,Enable,,1"",
+			o3 = ""Case2_seventh_tank_spawn,Enable,,1"",
+			o4 = ""Case3_seventh_tank_spawn,Enable,,1"",
+			o5 = ""Case4_seventh_tank_spawn,Enable,,1"",
+			o6 = ""Case5_seventh_tank_spawn,Enable,,1"",
+			o7 = ""Case6_seventh_tank_spawn,Enable,,1"",
+            o8 = ""Case4_seventh_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case4_seventh_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_hotel_left,SpawnZombie,tank""
+            o2 = ""Case1_eighth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_eighth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_eighth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_eighth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_eighth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_eighth_tank_spawn,Enable,,1"",
+            o8 = ""Case4_eighth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case4_eighth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_hotel_left,SpawnZombie,tank""
+            o2 = ""Case1_nineth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_nineth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_nineth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_nineth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_nineth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_nineth_tank_spawn,Enable,,1"",
+            o8 = ""Case4_nineth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case4_nineth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_hotel_left,SpawnZombie,tank""
+            o2 = ""Case1_tenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_tenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_tenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_tenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_tenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_tenth_tank_spawn,Enable,,1"",
+            o8 = ""Case4_tenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case4_tenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_hotel_left,SpawnZombie,tank""
+            o2 = ""Case1_eleventh_tank_spawn,Enable,,1"",
+			o3 = ""Case2_eleventh_tank_spawn,Enable,,1"",
+			o4 = ""Case3_eleventh_tank_spawn,Enable,,1"",
+			o5 = ""Case4_eleventh_tank_spawn,Enable,,1"",
+			o6 = ""Case5_eleventh_tank_spawn,Enable,,1"",
+			o7 = ""Case6_eleventh_tank_spawn,Enable,,1"",
+            o8 = ""Case4_eleventh_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case4_eleventh_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_hotel_left,SpawnZombie,tank""
+            o2 = ""Case1_twelfth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_twelfth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_twelfth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_twelfth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_twelfth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_twelfth_tank_spawn,Enable,,1"",
+            o8 = ""Case4_twelfth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case4_twelfth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_hotel_left,SpawnZombie,tank""
+            o2 = ""Case1_thirteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_thirteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_thirteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_thirteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_thirteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_thirteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case4_thirteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case4_thirteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_hotel_left,SpawnZombie,tank""
+            o2 = ""Case1_fourteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fourteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fourteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fourteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fourteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fourteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case4_fourteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case4_fourteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_hotel_left,SpawnZombie,tank""
+            o2 = ""Case1_fifteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fifteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fifteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fifteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fifteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fifteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case4_fifteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case4_fifteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_hotel_left,SpawnZombie,tank""
+            o2 = ""Case1_sixteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_sixteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_sixteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_sixteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_sixteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_sixteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case4_sixteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case4_sixteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""special_spawner_hotel_left,SpawnZombie,tank""
+        }
+    }
+});
+
+////////////
+// Case 5 //
+////////////
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case5_second_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_right,SpawnZombie,tank"",
+            o2 = ""Case1_third_tank_spawn,Enable,,1"",
+			o3 = ""Case2_third_tank_spawn,Enable,,1"",
+			o4 = ""Case3_third_tank_spawn,Enable,,1"",
+			o5 = ""Case4_third_tank_spawn,Enable,,1"",
+			o6 = ""Case5_third_tank_spawn,Enable,,1"",
+			o7 = ""Case6_third_tank_spawn,Enable,,1"",
+            o8 = ""Case5_third_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case5_third_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_right,SpawnZombie,tank""
+            o2 = ""Case1_fourth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fourth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fourth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fourth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fourth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fourth_tank_spawn,Enable,,1"",
+            o8 = ""Case5_fourth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case5_fourth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_right,SpawnZombie,tank""
+            o2 = ""Case1_fifth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fifth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fifth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fifth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fifth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fifth_tank_spawn,Enable,,1"",
+            o8 = ""Case5_fifth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case5_fifth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_right,SpawnZombie,tank""
+            o2 = ""Case1_sixth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_sixth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_sixth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_sixth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_sixth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_sixth_tank_spawn,Enable,,1"",
+            o8 = ""Case5_sixth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case5_sixth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_right,SpawnZombie,tank""
+            o2 = ""Case1_seventh_tank_spawn,Enable,,1"",
+			o3 = ""Case2_seventh_tank_spawn,Enable,,1"",
+			o4 = ""Case3_seventh_tank_spawn,Enable,,1"",
+			o5 = ""Case4_seventh_tank_spawn,Enable,,1"",
+			o6 = ""Case5_seventh_tank_spawn,Enable,,1"",
+			o7 = ""Case6_seventh_tank_spawn,Enable,,1"",
+            o8 = ""Case5_seventh_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case5_seventh_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_right,SpawnZombie,tank""
+            o2 = ""Case1_eighth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_eighth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_eighth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_eighth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_eighth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_eighth_tank_spawn,Enable,,1"",
+            o8 = ""Case5_eighth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case5_eighth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_right,SpawnZombie,tank""
+            o2 = ""Case1_nineth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_nineth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_nineth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_nineth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_nineth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_nineth_tank_spawn,Enable,,1"",
+            o8 = ""Case5_nineth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case5_nineth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_right,SpawnZombie,tank""
+            o2 = ""Case1_tenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_tenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_tenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_tenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_tenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_tenth_tank_spawn,Enable,,1"",
+            o8 = ""Case5_tenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case5_tenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_right,SpawnZombie,tank""
+            o2 = ""Case1_eleventh_tank_spawn,Enable,,1"",
+			o3 = ""Case2_eleventh_tank_spawn,Enable,,1"",
+			o4 = ""Case3_eleventh_tank_spawn,Enable,,1"",
+			o5 = ""Case4_eleventh_tank_spawn,Enable,,1"",
+			o6 = ""Case5_eleventh_tank_spawn,Enable,,1"",
+			o7 = ""Case6_eleventh_tank_spawn,Enable,,1"",
+            o8 = ""Case5_eleventh_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case5_eleventh_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_right,SpawnZombie,tank""
+            o2 = ""Case1_twelfth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_twelfth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_twelfth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_twelfth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_twelfth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_twelfth_tank_spawn,Enable,,1"",
+            o8 = ""Case5_twelfth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case5_twelfth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_right,SpawnZombie,tank""
+            o2 = ""Case1_thirteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_thirteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_thirteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_thirteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_thirteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_thirteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case5_thirteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case5_thirteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_right,SpawnZombie,tank""
+            o2 = ""Case1_fourteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fourteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fourteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fourteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fourteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fourteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case5_fourteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case5_fourteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_right,SpawnZombie,tank""
+            o2 = ""Case1_fifteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fifteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fifteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fifteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fifteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fifteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case5_fifteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case5_fifteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_right,SpawnZombie,tank""
+            o2 = ""Case1_sixteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_sixteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_sixteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_sixteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_sixteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_sixteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case5_sixteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case5_sixteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_street_right,SpawnZombie,tank""
+        }
+    }
+});
+
+////////////
+// Case 6 //
+////////////
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case6_second_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_hotel_mid_roof,SpawnZombie,tank"",
+            o2 = ""Case1_third_tank_spawn,Enable,,1"",
+			o3 = ""Case2_third_tank_spawn,Enable,,1"",
+			o4 = ""Case3_third_tank_spawn,Enable,,1"",
+			o5 = ""Case4_third_tank_spawn,Enable,,1"",
+			o6 = ""Case5_third_tank_spawn,Enable,,1"",
+			o7 = ""Case6_third_tank_spawn,Enable,,1"",
+            o8 = ""Case6_third_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case6_third_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_hotel_mid_roof,SpawnZombie,tank""
+            o2 = ""Case1_fourth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fourth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fourth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fourth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fourth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fourth_tank_spawn,Enable,,1"",
+            o8 = ""Case6_fourth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case6_fourth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_hotel_mid_roof,SpawnZombie,tank""
+            o2 = ""Case1_fifth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fifth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fifth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fifth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fifth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fifth_tank_spawn,Enable,,1"",
+            o8 = ""Case6_fifth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case6_fifth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_hotel_mid_roof,SpawnZombie,tank""
+            o2 = ""Case1_sixth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_sixth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_sixth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_sixth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_sixth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_sixth_tank_spawn,Enable,,1"",
+            o8 = ""Case6_sixth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case6_sixth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_hotel_mid_roof,SpawnZombie,tank""
+            o2 = ""Case1_seventh_tank_spawn,Enable,,1"",
+			o3 = ""Case2_seventh_tank_spawn,Enable,,1"",
+			o4 = ""Case3_seventh_tank_spawn,Enable,,1"",
+			o5 = ""Case4_seventh_tank_spawn,Enable,,1"",
+			o6 = ""Case5_seventh_tank_spawn,Enable,,1"",
+			o7 = ""Case6_seventh_tank_spawn,Enable,,1"",
+            o8 = ""Case6_seventh_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case6_seventh_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_hotel_mid_roof,SpawnZombie,tank""
+            o2 = ""Case1_eighth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_eighth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_eighth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_eighth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_eighth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_eighth_tank_spawn,Enable,,1"",
+            o8 = ""Case6_eighth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case6_eighth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_hotel_mid_roof,SpawnZombie,tank""
+            o2 = ""Case1_nineth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_nineth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_nineth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_nineth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_nineth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_nineth_tank_spawn,Enable,,1"",
+            o8 = ""Case6_nineth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case6_nineth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_hotel_mid_roof,SpawnZombie,tank""
+            o2 = ""Case1_tenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_tenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_tenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_tenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_tenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_tenth_tank_spawn,Enable,,1"",
+            o8 = ""Case6_tenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case6_tenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_hotel_mid_roof,SpawnZombie,tank""
+            o2 = ""Case1_eleventh_tank_spawn,Enable,,1"",
+			o3 = ""Case2_eleventh_tank_spawn,Enable,,1"",
+			o4 = ""Case3_eleventh_tank_spawn,Enable,,1"",
+			o5 = ""Case4_eleventh_tank_spawn,Enable,,1"",
+			o6 = ""Case5_eleventh_tank_spawn,Enable,,1"",
+			o7 = ""Case6_eleventh_tank_spawn,Enable,,1"",
+            o8 = ""Case6_eleventh_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case6_eleventh_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_hotel_mid_roof,SpawnZombie,tank""
+            o2 = ""Case1_twelfth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_twelfth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_twelfth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_twelfth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_twelfth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_twelfth_tank_spawn,Enable,,1"",
+            o8 = ""Case6_twelfth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case6_twelfth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_hotel_mid_roof,SpawnZombie,tank""
+            o2 = ""Case1_thirteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_thirteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_thirteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_thirteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_thirteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_thirteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case6_thirteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case6_thirteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_hotel_mid_roof,SpawnZombie,tank""
+            o2 = ""Case1_fourteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fourteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fourteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fourteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fourteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fourteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case6_fourteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case6_fourteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_hotel_mid_roof,SpawnZombie,tank""
+            o2 = ""Case1_fifteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_fifteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_fifteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_fifteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_fifteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_fifteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case6_fifteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case6_fifteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_hotel_mid_roof,SpawnZombie,tank""
+            o2 = ""Case1_sixteenth_tank_spawn,Enable,,1"",
+			o3 = ""Case2_sixteenth_tank_spawn,Enable,,1"",
+			o4 = ""Case3_sixteenth_tank_spawn,Enable,,1"",
+			o5 = ""Case4_sixteenth_tank_spawn,Enable,,1"",
+			o6 = ""Case5_sixteenth_tank_spawn,Enable,,1"",
+			o7 = ""Case6_sixteenth_tank_spawn,Enable,,1"",
+            o8 = ""Case6_sixteenth_tank_spawn,Trigger""
+        }
+    }
+});
+
+SpawnEntityFromTable(""logic_relay"", {
+    StartDisabled = true,
+    targetname = ""Case6_sixteenth_tank_spawn""
+    connections = {
+        OnTrigger = {
+            o1 = ""tank_spawner_hotel_mid_roof,SpawnZombie,tank""
+        }
+    }
+});
+
+EntFire(""locTankPicker"", ""AddOutput"", ""OnCase01 Case1_second_tank_spawn,Enable,,1"");
+EntFire(""locTankPicker"", ""AddOutput"", ""OnCase01 Case1_second_tank_spawn,Trigger"");
+EntFire(""locTankPicker"", ""AddOutput"", ""OnCase02 Case2_second_tank_spawn,Enable,,1"");
+EntFire(""locTankPicker"", ""AddOutput"", ""OnCase02 Case2_second_tank_spawn,Trigger"");
+EntFire(""locTankPicker"", ""AddOutput"", ""OnCase03 Case3_second_tank_spawn,Enable,,1"");
+EntFire(""locTankPicker"", ""AddOutput"", ""OnCase03 Case3_second_tank_spawn,Trigger"");
+EntFire(""locTankPicker"", ""AddOutput"", ""OnCase04 Case4_second_tank_spawn,Enable,,1"");
+EntFire(""locTankPicker"", ""AddOutput"", ""OnCase04 Case4_second_tank_spawn,Trigger"");
+EntFire(""locTankPicker"", ""AddOutput"", ""OnCase05 Case5_second_tank_spawn,Enable,,1"");
+EntFire(""locTankPicker"", ""AddOutput"", ""OnCase05 Case5_second_tank_spawn,Trigger"");
+EntFire(""locTankPicker"", ""AddOutput"", ""OnCase06 Case6_second_tank_spawn,Enable,,1"");
+EntFire(""locTankPicker"", ""AddOutput"", ""OnCase06 Case6_second_tank_spawn,Trigger"");"
+igipFwtw,Neko Hub V1,robinmollen,Lua,Thursday 13th of July 2023 04:31:34 PM CDT,"require(0x34485aa43).nekohub(""YourNameHere"")"
+p2dBzCa8,Красивая выдача доната — MyCommand,JaycobYT,YAML,Thursday 13th of July 2023 04:23:48 PM CDT,"#-----------------------------------------------------#
+#										              #
+#  Для работы всех необходимых плейсхолдеров          #
+#  установите расширения для плагина PlaceholderAPI:  #
+#										              #
+#  /papi ecloud download Player                       #
+#  /papi ecloud download ParseOther                   #
+#  /papi reload                                       #
+#										              #
+#										              #
+#-----------------------------------------------------#
+#										              #
+#	Красивая покупка доната — MyCommand		          #
+#	Выдача привилегии навсегда (/givedonate)          #
+#	                                		          #
+#-----------------------------------------------------#
+givedonate:
+  command: /givedonate
+  type: RUN_CONSOLE
+  runcmd:
+  - '$broadcasttext$'
+  - '$broadcasttext$ &aДонат  |  &fИгрок &e$arg1 &fприобрёл донат!'
+  - '$broadcasttext$ &aДонат  |  &fСпасибо за поддержку сервера &e:)'
+  - '$broadcasttext$'
+  - 'minecraft:title $arg1 times 20 140 20'
+  - 'minecraft:title $arg1 title {""text"":""&aУспешная Покупка!""}'
+  - 'minecraft:title $arg1 subtitle {""text"":""&fСпасибо за поддержку!""}'
+  - 'minecraft:playsound block.end_portal.spawn ambient $arg1 %parseother_{$arg1}_{player_x}% %parseother_{$arg1}_{player_y}% %parseother_{$arg1}_{player_z}%'
+  - 'minecraft:effect give $arg1 blindness 10 1'
+  - 'lp user $arg1 parent add $arg2'
+  - 'mycmd-playerdata add $arg1 donate_count +1'
+  register: true
+  permission-required: true
+  permission-node: admin.givedonate
+  required_args: 2
+  error-message: '&aДонат  |  &fИспользование: &7/givedonate [ник] [донат]'
+  placeholders_replace_mode: NO_CUSTOM_VARIABLES
+  tab_completer:
+    1:
+    - $player_list
+    2:
+    - knight
+    - lord
+    - prince
+    - legend
+    - god
+
+#---------------------------------------------------#
+#										            #
+#	Красивая покупка доната — MyCommand		        #
+#	Выдача привилегии на время (/givetempdonate)    #
+#	                                		        #
+#---------------------------------------------------#
+givetempdonate:
+  command: /givetempdonate
+  type: RUN_CONSOLE
+  runcmd:
+  - '$broadcasttext$'
+  - '$broadcasttext$ &aДонат  |  &fИгрок &e$arg1 &fприобрёл временный донат!'
+  - '$broadcasttext$ &aДонат  |  &fСпасибо за поддержку сервера &e:)'
+  - '$broadcasttext$'
+  - 'minecraft:title $arg1 times 20 140 20'
+  - 'minecraft:title $arg1 title {""text"":""&aУспешная Покупка!""}'
+  - 'minecraft:title $arg1 subtitle {""text"":""&fСпасибо за поддержку!""}'
+  - 'minecraft:playsound block.end_portal.spawn ambient $arg1 %parseother_{$arg1}_{player_x}% %parseother_{$arg1}_{player_y}% %parseother_{$arg1}_{player_z}%'
+  - 'minecraft:effect give $arg1 blindness 10 1'
+  - 'lp user $arg1 parent addtemp $arg2 $arg3'
+  - 'mycmd-playerdata add $arg1 donate_count +1'
+  register: true
+  permission-required: true
+  permission-node: admin.givetempdonate
+  required_args: 3
+  error-message: '&aДонат  |  &fИспользование: &7/givetempdonate [ник] [донат] [время]'
+  placeholders_replace_mode: NO_CUSTOM_VARIABLES
+  tab_completer:
+    1:
+    - $player_list
+    2:
+    - knight
+    - lord
+    - prince
+    - legend
+    - god
+    3:
+    - 10h
+    - 14d
+    - 30d"
+WNVhbdNc,[1.12.2] Mekanism digital miner - Computercraft automation script,martinjanas,Lua,Thursday 13th of July 2023 03:43:55 PM CDT,"-- Computercraft script: Mekanism's Digital Miner Automator version 1.1 for Minecraft 1.12.2 by MartiNJ409 - https://github.com/martinjanas
+
+-- This is a script which places & destroys the miner, the storage block, the energy block and the chunkloader block..
+-- ..It also waits for the miner to mine all the ores before destroying said blocks and moves 32 blocks to find more ores.
+
+-- If you are running this script on PeripheralsPlusOne's CHUNKY TURTLE: You have to MAKE SURE the LABEL has the word ""chunky"" in it, eg: ""chunky_mining_turtle"" 
+-- Just place digital miner, the energy block, the storage block and the chunkloader into turtle.
+ 
+-- mekanism:machineblock - Digital Miner
+-- enderstorage:ender_storage - Ender Chest from EnderStorage mod - or use any other chest
+-- mekanism:machineblock3 - Quantum Entangloporter - you can use any other form of wireless energy, just copypaste the id/name...
+ 
+-- Edit these three lines underneath to match your blocks of choice
+ENERGY_BLOCK = ""mekanism:machineblock3""
+STORAGE_BLOCK = ""enderstorage:ender_storage""
+CHUNKLOADER_BLOCK = ""chickenchunks:chunk_loader""
+------------------------------------------------
+
+MINER = nil
+SIDE = ""NO SIDE""
+
+CHUNKLOADER_DETECTED = false
+IS_CHUNKY_TURTLE = false -- PeripheralsPlusOne's Chunky turtle
+
+place_blocks = nil
+select_item = nil
+destroy_blocks = nil
+go_forward_32blocks = nil
+get_time = nil
+has_item = nil
+
+function main()
+	if string.find(os.getComputerLabel(), ""chunky"") then
+		IS_CHUNKY_TURTLE = true
+	end
+
+	place_blocks()
+	
+	os.sleep(0.15)
+	
+	for i = MINER.getToMine(), 0, -1 do
+	
+		local seconds = (i * 0.385)
+		
+		if i % 5 == 0 then
+			local text = string.format(""To mine: %d, ETA: %s"", i, get_time(seconds))
+			print(text)
+		end
+		
+		os.sleep(0.385)
+	end
+
+	destroy_blocks()
+		
+	os.sleep(2)
+		
+	go_forward_32blocks()
+end
+
+function place_blocks()
+	select_item(""mekanism:machineblock"")
+	
+	turtle.placeUp()
+	turtle.turnRight()
+	turtle.forward()
+	turtle.forward()
+	turtle.turnLeft()
+	
+	select_item(ENERGY_BLOCK)
+	
+	turtle.placeUp()
+	turtle.forward()
+	turtle.forward()
+	turtle.turnLeft()
+	turtle.forward()
+	turtle.forward()
+	turtle.up()
+	
+	select_item(STORAGE_BLOCK)
+	
+	turtle.placeUp()
+	turtle.forward()
+	
+	if not IS_CHUNKY_TURTLE and select_item(CHUNKLOADER_BLOCK) then
+		CHUNKLOADER_DETECTED = true
+		
+		select_item(CHUNKLOADER_BLOCK)
+		
+		turtle.placeUp()
+	end
+	
+	turtle.forward()
+	turtle.turnLeft()
+	turtle.forward()
+	turtle.forward()
+	
+	if IS_CHUNKY_TURTLE then
+		turtle.turnLeft()
+		SIDE = ""front""
+	else 
+		SIDE = ""left""
+	end		
+	
+	MINER = peripheral.wrap(SIDE)
+	MINER.start()
+end
+
+function select_item(item_name)
+	for i = 1, 16, 1 do
+		local item_info = turtle.getItemDetail(i)
+	
+		if item_info ~= nil then
+			if item_info.name == item_name then
+				turtle.select(i)
+				
+				return true
+			end
+		end
+	end
+	
+	return false
+end
+
+function destroy_blocks()
+	if not IS_CHUNKY_TURTLE then
+		turtle.turnLeft()
+	end
+	
+	turtle.dig()
+	turtle.forward()
+	turtle.forward()
+	turtle.forward()
+	turtle.dig()
+	turtle.turnLeft()
+	turtle.forward()
+	turtle.forward()
+	turtle.up()
+	turtle.turnLeft()
+	turtle.dig()
+	
+	if not IS_CHUNKY_TURTLE and CHUNKLOADER_DETECTED then
+		turtle.forward()
+		turtle.dig()
+	end
+	
+	turtle.down()
+	turtle.down()
+end
+
+function go_forward_32blocks()
+	turtle.turnLeft()
+	turtle.turnLeft()
+	turtle.turnLeft()
+	
+	for j = 1, 32, 1 do
+		turtle.forward()
+	end
+end
+
+function get_time(seconds)
+  local hours = math.floor(seconds / 3600)
+  local minutes = math.floor((seconds % 3600) / 60)
+  local remaining_seconds = seconds % 60
+
+  return string.format(""%02d:%02d:%02d"", hours, minutes, remaining_seconds)
+end
+
+for i = 1, 16, 1 do
+	HAS_CHUNKLOADER = false
+
+	main()
+end
+"
+v043nqP6,stack using list,STANAANDREY,C++,Thursday 13th of July 2023 03:35:25 PM CDT,"#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+
+
+struct ListNode {
+    struct ListNode *nxt;
+    int elem;
+};
+
+class Stack {
+public:
+    Stack() {
+        stBuf = nullptr;
+    }
+
+    void push(int elem) {
+        ListNode *newLN = (ListNode*)malloc(sizeof(ListNode));
+        if (newLN == nullptr) {
+            perror("""");
+            _free();
+            exit(1);
+        }
+        newLN->elem = elem;
+        newLN->nxt = stBuf;
+        stBuf = newLN;
+        size++;
+    }
+
+    int getSize() {
+        return size;
+    }
+
+    int getTop() {
+        return stBuf->elem;
+    }
+
+    int pop() {
+        if (!size) {
+            exit(-1);
+        }
+        ListNode *topElem = stBuf;
+        int elem = stBuf->elem;
+        stBuf = topElem->nxt;
+        free(topElem);
+        size--;
+        return elem;
+    }
+
+    ~Stack() {
+        _free();
+    }
+
+private:
+    ListNode *stBuf;
+    int size = 0;
+
+    void _free() {
+        while (size) {
+            pop();
+        }
+    }
+};
+
+int main() {
+    using std::cout;
+    using std::endl;
+    Stack st;
+    st.push(2);
+    st.push(4);
+    st.pop();
+    cout << st.getSize() <<  ' ' << st.getTop() << endl;
+    return 0;
+}"
+5QdrqRa4,Untitled Hub,robinmollen,Lua,Thursday 13th of July 2023 03:20:00 PM CDT,"require(14021031434)(""YourNameHere"")"
+dBLdMsGd,Article of independence,Thoughtcoder411,ActionScript,Thursday 13th of July 2023 03:15:42 PM CDT,"Declaration of Independence: Kingdom Cluck
+
+In the pursuit of freedom, self-determination, and the right to govern our own affairs, lands and pursuits. We, the people of the Kingdom Cluck, hereby declare our independence from any pre-established nation or foreign entity and establish ourselves as a sovereign and autonomous entity within the Minecraft world of Imperiya and any recognized media pertaining aforementioned minecraft world.
+
+Recognizing the inherent worth and dignity of every player, and acknowledging our wealth and resources, we assert our commitment to maintaining peaceful relations with all nations while firmly asserting our sovereignty and independence. As a nation that values harmony and cooperation, we seek to engage in diplomacy and foster positive relationships with the global community.
+
+We firmly believe that every nation has the right to shape its destiny and govern its citizens as they see fit. The Kingdom Cluck, being a politically correct and fair nation, shall adhere to principles of justice, equality, and respect for all players within our borders under our own laws and preceed our own judiciary system. Our goal is to create a society that upholds the values of freedom, prosperity, and mutual respect for all nations willing to allign there valuse under a similar banner.
+
+While we understand the realities of the world in which we exist, we declare that the Kingdom Cluck shall not serve as a puppet nation or subordinate, subservient entity to any other established nation. We stand firmly on our own, ready to engage in alliances and partnerships based on equality and shared goals and in opposition to any stifled regime trying to enforce its will on smaller nations or entitys. We value our independence and sovereignty and will vigorously defend our right to self-governance.
+
+We extend an invitation to all nations, including Solstice and others, to recognize and understand that the Kingdom under Cluck as an independent and sovereign nation. We invite constructive dialogue, cooperation, and the establishment of diplomatic relations based on mutual respect and benefit. Through peaceful negotiation, we believe we can foster an environment of understanding and collaboration in which all nations can thrive. We will never be bullied or forced into any conflict but stand fast in any arena be financially, physically, or mentally demanding 🫴 
+
+With this declaration of independence, we embark on a path of self-determination and self-governance, forging our own destiny in the world of Imperiya. We invite players from all nations to visit our island, experience our unique culture, and join us in the pursuit of a harmonious and prosperous Minecraft world.
+
+Long live the Kingdom Cluck, a politically independent nation under cluck!
+
+Signed,
+
+[Monarch-Beelzebub4883]
+[Lords-limitless7899-DevDevDevDev]
+[July/13/2023]"
+EcAJnW7b,Dracula,AhmadXploit,Dart,Thursday 13th of July 2023 03:15:17 PM CDT,"[
+  {
+	""imgUrl"": ""https://via.placeholder.com/600/771796"",
+    ""name"": ""Dracula"",
+	""author"": ""Anonymous"",
+	""score"": ""2.13"",
+	""review"": ""107.3"",
+	""view"": ""2.7"",
+    ""desc"": ""   In the late 19th century, a chilling tale unfolded in the dark corners of Transylvania, introducing the world to one of the most iconic figures of horror literature—the vampire Count Dracula. The story begins with a young English lawyer named Jonathan Harker, who was sent to Transylvania to assist Count Dracula in the purchase of an estate in London. As Harker ventured deeper into the Carpathian Mountains, he couldn't shake off an eerie feeling that something sinister lurked in the shadows. Upon arriving at Castle Dracula, Harker found himself in the presence of a mysterious and enigmatic nobleman. Count Dracula was a tall, pale figure with sharp features and a commanding presence. Harker soon discovered that his host possessed supernatural abilities and an insatiable thirst for human blood.\n \n   As days turned into nights, Harker became a virtual prisoner in the castle, subjected to the Count's relentless and terrifying presence. He uncovered the truth about Dracula—he was an immortal vampire who sustained his existence by preying upon the living.Meanwhile, back in England, Harker's fiancée Mina Murray, along with her best friend Lucy Westenra, found themselves entangled in a web of darkness. Lucy, a vibrant and beautiful young woman, fell victim to the Count's insidious powers and became one of the undead. Distraught over Lucy's transformation, her suitors—Arthur Holmwood, Dr. John Seward, and Quincey Morris—joined forces with the renowned Dutch vampire hunter Abraham Van Helsing. Together, they sought to rid London of the vampire's menace and save Lucy's soul.Van Helsing, armed with knowledge of vampire lore, deduced that Count Dracula was the source of Lucy's affliction. The group embarked on a perilous quest to track down the vampire and put an end to his reign of terror.\n \n   Their pursuit led them to the dark alleys of London, where they faced numerous challenges and encounters with the supernatural. Van Helsing guided the group, equipping them with crucifixes, wooden stakes, and sacred relics to aid in their fight against the forces of evil. As the battle between good and evil intensified, Count Dracula sought to expand his dominion and find new victims. His menacing presence and ability to control wolves and bats heightened the sense of dread and danger that loomed over the city. Throughout their harrowing journey, the group discovered Dracula's vulnerability to sunlight, crucifixes, and the sacred soil of his homeland. Armed with this knowledge, they hatched a plan to destroy the vampire and save Mina, who had also fallen under Dracula's spell.\n \n   In a climactic showdown, the group cornered Dracula in his own lair, confronting him with their arsenal of weapons. Van Helsing, armed with a sacred knife, struck the final blow, piercing the vampire's heart and ending his reign of terror. With Dracula defeated, Lucy and the other victims of his curse found peace in death. Mina, having escaped the vampire's clutches, was finally freed from his influence. The group, exhausted but triumphant, vowed to protect others from the horrors they had witnessed. \n   The legacy of Dracula endures, captivating audiences with its depiction of a malevolent creature of the night. The story serves as a reminder that even in the face of darkness, courage and unity can overcome evil. Count Dracula's legend remains etched in our collective imagination—a symbol of both terror and fascination with the unknown.""
+  }
+]"
+p0MZmsKW,Untitled,pacho_the_python,Python,Thursday 13th of July 2023 03:12:37 PM CDT,"record = int(input())
+
+jumps = 0
+failed_jump = 0
+not_success = False
+lath_high = record - 30
+successful_jump = 0
+good_jump = 0
+while lath_high <= record:
+    for jump in range(1, 3 + 1):
+        current_jump = int(input())
+        jumps += 1
+        if current_jump <= lath_high:
+            failed_jump += 1
+
+        if current_jump > lath_high:
+            successful_jump += 1
+            good_jump = lath_high
+            failed_jump = 0
+            lath_high += 5
+            break
+    if failed_jump == 3:
+        not_success = True
+        break
+
+if not_success:
+    print(f""Tihomir failed at {lath_high}cm after {jumps} jumps."")
+if good_jump >= record:
+    print(f""Tihomir succeeded, he jumped over {good_jump}cm after {jumps} jumps."")
+"
+mKLjdj6G,Add 3d model to a website.,SpaceDorito,JavaScript,Thursday 13th of July 2023 03:09:20 PM CDT,"// ✨ 
+//    🌙 This codes adds a 3d model to a website, in this case it's a roblox character with a specific texture.~
+//        Note that the model should be on a local server file for this code to work. unless of course you change the location in the URL.~
+//        This code is extracted from a roblox clothing tester I made so there are just a few unnessasary stuff here too, I might have missed them.~
+//        This code is supposed to used on a website.
+//    🌙
+// ✨ 
+
+// Importing stuff
+import * as THREE from ""three""; // Import three.js
+import { OrbitControls } from ""three/addons/controls/OrbitControls.js"";
+import { TrackballControls } from ""three/addons/controls/TrackballControls.js"";
+import { GLTFLoader } from ""three/addons/loaders/GLTFLoader.js"";
+
+// Define the renderer
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight); // set the size of the renderer
+renderer.antialias = true; // enable anti alaising
+document.body.appendChild(renderer.domElement); // add the renderer to the website.
+renderer.shadowMap.enabled = true; // enable shadows.
+const camera = new THREE.PerspectiveCamera( // add the camera, im using a prespective camera since I want the user to be able to view the model in 360*.
+  60,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
+);
+
+// Add other basic stuff
+const scene = new THREE.Scene();
+const orbit = new OrbitControls(camera, renderer.domElement); // Add controls to the website
+const orbit2 = new TrackballControls(camera, renderer.domElement); // Isn't nessasary but im replacing the orbit control's zoom in with trackball control's zoom cuz it's smoother.
+const gridGround = new THREE.GridHelper(100, 130, 0x7a7a7a, 0x454545); // add a grid floor (usually a plane for the floor is used but i used a grid since it looks cooler and i want the user to be able to see the model's feet too.)
+scene.fog = new THREE.Fog(0x323232, 7, 15); // add fog (I used it as a sight limiter thing, basically made the background color and fog color same so it looks like the vision fades with distance.)
+scene.add(gridGround);
+
+// Set more basic stuff to make things according to preferences. 
+// I'm too tired to explain all of these iv been typing for like an hour for the other 2 examples. These are self explanatory.
+camera.position.set(-0.5, 1.7, 3.5);
+orbit.maxDistance = 7;
+orbit.minDistance = 0.7;
+orbit.target.set(0, 0.7, 0);
+orbit.enablePan = false;
+orbit.enableDamping = true;
+orbit.dampingFactor = 0.12;
+orbit.enableZoom = false;
+
+orbit2.noRotate = true;
+orbit2.noPan = true;
+orbit2.noZoom = false;
+orbit2.zoomSpeed = 1.5;
+
+orbit.update();
+
+// Set the color space it just makes colos more accurate and less washed out
+renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
+
+// Objects ⭐
+const loader = new GLTFLoader();
+
+// Defining the lights, I have set the strength of the lights to 0 cuz in the actual website, I have an option for the user to change the lighting.
+const ambientLight = new THREE.AmbientLight(0xf5feff, 1);
+
+const spotLight1 = new THREE.SpotLight(0xffffff, 0);
+spotLight1.position.set(1.5, 2, 2);
+const spotLight2 = new THREE.SpotLight(0xffffff, 0);
+spotLight2.position.set(-1, 2, -2);
+
+const spotLight3 = new THREE.SpotLight(0xeb7f2d, 0);
+spotLight3.position.set(3, 4, 3);
+const spotLight4 = new THREE.SpotLight(0x140078, 0);
+spotLight4.position.set(-3, 3, -2);
+
+scene.add(ambientLight, spotLight1, spotLight2, spotLight3, spotLight4); // adding the lights to the scene 
+
+THREE.ColorManagement.enabled = true;
+
+//   Character
+// these variables aren't nessassary but i used them since i need to get the opject in a future code.
+let torsoMaterial = """";
+let shirtMaterial = """";
+let pantsMaterial = """";
+let torsoMesh;
+let shirtMesh;
+let pantsMesh;
+// I just add the 3d model to the scene in here. there are 3 models, the torso (torso), shirt (hands), pants (legs). these combined make the character.
+// Torso
+loader.load( // load the model
+  ""../models/torso.glb"",
+  function (gltf) {
+    const model = gltf.scene;
+    model.scale.set(0.3, 0.3, 0.3); // Make the size smaller cuz for some reason the model was wayyyyyy too huge when imported, ig it's a blender thing similar to how fbx models are huge when imported to roblxo studio.
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load( // load the image textures and apply them to the model
+      ""../models/textures/baseShirt.png"",
+      function (texture) {
+        texture.flipY = false;
+        texture.needsUpdate = true;
+      }
+    );
+    torsoMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      map: texture,
+    });
+    model.traverse(function (node) {
+      if (node.isMesh) {
+        node.material = torsoMaterial;
+        node.castShadow = true;
+      }
+    });
+    torsoMesh = model;
+    scene.add(torsoMesh);
+  },
+  undefined,
+  function (error) {
+    console.error(error);
+  }
+);
+
+// same thing for the shirt and pants so didn't comment them.
+
+// Shirt
+loader.load(
+  ""../models/Shirt.glb"",
+  function (gltf) {
+    const model = gltf.scene;
+    model.scale.set(0.3, 0.3, 0.3); // Adjust the scale as needed
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load(
+      ""../models/textures/baseShirt.png"",
+      function (texture) {
+        texture.flipY = false;
+        texture.needsUpdate = true;
+      }
+    );
+    shirtMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      map: texture,
+    });
+    model.traverse(function (node) {
+      if (node.isMesh) {
+        node.material = shirtMaterial;
+        node.castShadow = true;
+      }
+    });
+    shirtMesh = model;
+    scene.add(shirtMesh);
+  },
+  undefined,
+  function (error) {
+    console.error(error);
+  }
+);
+// Pants
+loader.load(
+  ""../models/Pants.glb"",
+  function (gltf) {
+    const model = gltf.scene;
+    model.scale.set(0.3, 0.3, 0.3); // Adjust the scale as needed
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load(
+      ""../models/textures/basePants.png"",
+      function (texture) {
+        texture.flipY = false;
+        texture.needsUpdate = true;
+      }
+    );
+    pantsMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      map: texture,
+    });
+    model.traverse(function (node) {
+      if (node.isMesh) {
+        node.material = pantsMaterial;
+        node.castShadow = true;
+      }
+    });
+    pantsMesh = model;
+    scene.add(pantsMesh);
+  },
+  undefined,
+  function (error) {
+    console.error(error);
+  }
+);
+
+scene.add(ambientLight);
+renderer.setClearColor(0x323232); // Set the background color
+
+// Updates stuff for each frame renderd.
+function animate() {
+  // update the camera positions
+  const target = orbit.target;
+  orbit.update();
+  orbit2.target.set(target.x, target.y, target.z);
+  orbit2.update(); 
+  // render the frame.
+  renderer.render(scene, camera);
+}
+renderer.setAnimationLoop(animate); // run the animate function on a animation loop. (forever)
+window.addEventListener(""resize"", function () { // resize the camera if the screen size changes.
+  camera.aspect = this.window.innerWidth / this.window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// FINALLY THE END! 💖"
+kr5iWULJ,Untitled,Urchien,Python,Thursday 13th of July 2023 02:55:24 PM CDT,"def train_models(X_train, y_train, params, random_state=RANDOM_STATE):
+    results = []
+    best_f1 = 0
+
+    for param in params:
+        model_pipe = Pipeline([
+            ('model', param['model'][0])
+        ])
+        rs = RandomizedSearchCV(model_pipe, param_distributions=param, n_iter=12,
+                                scoring='f1', n_jobs=-1, cv=3, verbose=10, random_state=random_state)
+        rs.fit(X_train, y_train)
+
+        model_name = type(rs.best_estimator_.named_steps['model']).__name__
+        best_params = rs.best_params_
+        f1 = rs.best_score_
+        y_pred = rs.predict(X_train)
+        recall = recall_score(y_train, y_pred)
+        precision = precision_score(y_train, y_pred)
+
+        results.append({
+            'Model': model_name,
+            'Best_params': best_params,
+            'F1_score': f1,
+            'Recall': recall,
+            'Precision': precision
+        })
+
+        if f1 > best_f1:
+            best_f1 = f1
+            best_model = rs.best_estimator_
+
+    df_results = pd.DataFrame(results)
+
+    return df_results, best_model"
+qfQ4GHJA,The Story of Mona Lisa,AhmadXploit,Dart,Thursday 13th of July 2023 02:52:50 PM CDT,"[
+  {
+	""imgUrl"": ""https://via.placeholder.com/600/771796"",
+    ""name"": ""The Story of Mona Lisa"",
+	""author"": ""Anonymous"",
+	""score"": ""2.13"",
+	""review"": ""107.3"",
+	""view"": ""2.7"",
+    ""desc"": ""   In the bustling city of Florence, during the early 16th century, there lived a young woman named Lisa Gherardini. Lisa was known for her striking beauty and enigmatic charm, which captivated all who encountered her. Little did she know that her portrait would one day become the most famous and enigmatic painting in the world—the Mona Lisa. Lisa grew up in a modest family, and at the age of sixteen, she married a wealthy Florentine merchant named Francesco del Giocondo. Lisa became known as Mona Lisa, meaning ""Madam Lisa,"" a title of respect given to married women in Italian society.\n   In 1503, the renowned Italian artist Leonardo da Vinci received a commission from Francesco del Giocondo to paint a portrait of his wife. Leonardo, known for his artistic genius and innovative techniques, gladly accepted the task. Little did he know that this painting would become his most celebrated masterpiece. As Leonardo began to work on the portrait, he discovered that Mona Lisa possessed a unique aura—an aura that he was determined to capture on canvas. He observed her every feature, from her enigmatic smile to the depths of her soulful eyes. Leonardo's meticulous attention to detail and his ability to capture the essence of his subjects allowed him to bring Mona Lisa to life. For years, Leonardo devoted himself to the painting, working tirelessly to perfect every brushstroke and nuance. He experimented with various techniques, using sfumato to create soft transitions between colors and chiaroscuro to achieve depth and realism. The result was a portrait that seemed to radiate with a quiet, timeless beauty.\n   Leonardo's depiction of Mona Lisa was unlike any other portrait of its time. Instead of the rigid, formal poses commonly seen in Renaissance art, Mona Lisa appeared relaxed and natural. Her enigmatic smile sparked curiosity and fascination among those who viewed the painting. Despite its remarkable qualities, the Mona Lisa did not garner much attention during Leonardo's lifetime. The artist kept the portrait with him until his death in 1519. After his passing, the painting passed through various hands, eventually finding its way into the possession of King Francis I of France. Under the French monarchy, the Mona Lisa gained recognition and began to captivate the imaginations of art enthusiasts. Its mystery, the depth of its subject's expression, and the masterful technique employed by Leonardo made it an object of intrigue and admiration.\n   In 1911, however, the painting was stolen from the Louvre Museum in Paris, causing a worldwide sensation. The theft catapulted the Mona Lisa to even greater fame, as newspapers and art lovers across the globe mourned the loss of the iconic masterpiece. After an extensive search, the painting was recovered in 1913 and returned to its rightful place in the Louvre, where it remains today, protected and revered. The Mona Lisa continues to captivate millions of visitors each year. People from all corners of the globe travel to the Louvre to catch a glimpse of her enigmatic smile and gaze into her timeless eyes. Countless interpretations and theories have emerged, attempting to unravel the secrets hidden within the painting, but the true meaning of Mona Lisa's expression remains a subject of debate and speculation. Whether it is the mastery of Leonardo's technique, the mystery surrounding the subject, or the fascination with the painting's history, the Mona Lisa holds an undeniable allure. She is a symbol of beauty, intrigue, and the enduring power of art to transcend time.\n   The story of Mona Lisa, the woman behind the captivating smile, may forever remain shrouded in mystery. Yet, her image continues to inspire awe and wonder, reminding us of the profound impact that art can have on our lives. The Mona Lisa stands as a testament to the artistic brilliance of Leonardo da Vinci and the enduring power of an enigmatic smile that has captured the hearts of millions throughout the ages.""
+  }
+]"
+HqC1tRt1,The Story of Joan of Arc,AhmadXploit,Dart,Thursday 13th of July 2023 02:43:34 PM CDT,"[
+  {
+	""imgUrl"": ""https://via.placeholder.com/600/771796"",
+    ""name"": ""The Story of Joan of Arc"",
+	""author"": ""Anonymous"",
+	""score"": ""2.13"",
+	""review"": ""107.3"",
+	""view"": ""2.7"",
+    ""desc"": ""   In the small village of Domrémy, nestled in the heart of France, a young girl named Joan was born in the year 1412. Joan was a spirited and devout child, known for her piety and her strong sense of righteousness. Little did she know that she would become one of the most remarkable figures in French history—the legendary Joan of Arc. At the time of Joan's birth, France was embroiled in a bitter conflict known as the Hundred Years' War, a long-standing battle between the French and the English. The French monarchy was divided, and the English had taken control of large parts of the country, including the capital, Paris. Joan, however, harbored a deep love for her country and believed that she was destined to save France from its plight. She began to experience visions and hear divine voices, which she identified as saints and angels. These celestial messengers instructed her to take up arms and lead the French army to victory.\n   Driven by her unwavering faith and her sense of purpose, Joan decided to approach the dauphin, the uncrowned heir to the French throne, Charles VII. Disguised as a man, she traveled to the dauphin's court at Chinon and requested an audience. Initially skeptical of the young peasant girl, Charles VII agreed to meet with Joan. To test her, he disguised himself among his courtiers. But Joan, guided by her visions, was able to identify him instantly. This miraculous feat convinced Charles VII of her divine mission, and he granted her an army. Clad in armor and carrying a banner with the image of the Virgin Mary, Joan led the French forces into battle. Despite her lack of military training, her presence and unwavering faith inspired her troops, and they experienced a series of victories. The tides of the war began to turn, as the French reclaimed territories that had been under English control for years.\n   Joan's most iconic triumph came during the siege of Orléans, a strategic city on the banks of the Loire River. The English army had laid siege to Orléans for months, and the city was on the brink of collapse. Joan, filled with determination, led a daring assault that caught the English off guard. Her strategic brilliance and unwavering courage drove the English forces back, leading to the liberation of Orléans. News of Joan's victories spread throughout France and Europe, and her reputation as a miraculous warrior grew. However, her success also attracted the attention of her enemies. In May 1430, Joan was captured by the Burgundians, allies of the English, during a skirmish near Compiègne. Joan was handed over to the English, who saw her as a threat and an obstacle to their control over France. She was put on trial for charges of heresy and witchcraft. Despite the lack of evidence, Joan was found guilty and sentenced to death. On May 30, 1431, at the age of just nineteen, Joan of Arc was burned at the stake in Rouen. Her death shook the nation and sparked outrage among those who saw her as a symbol of hope and liberation. Her bravery and unwavering faith in the face of adversity left an indelible mark on French history.\n   Decades later, Joan's trial was reexamined, and she was posthumously declared innocent of all charges. She was canonized as a saint by the Catholic Church in 1920, and she remains an enduring symbol of French patriotism and female empowerment.\n   The story of Joan of Arc serves as a testament to the power of faith, courage, and conviction. Joan's unwavering belief in her divine mission and her determination to fight for her country against all odds continue to inspire people around the world to this day. Her legacy as the Maid of Orléans lives on, reminding us that even the most unlikely of heroes can change the course of history.""
+  }
+]"
+TxS1Np3x,J - Rash Cloyale,danielvitor23,C++,Thursday 13th of July 2023 02:07:56 PM CDT,"#include <bits/stdc++.h>
+using namespace std;
+
+using i64 = long long;
+
+const i64 INF = 0x3f3f3f3f3f3f3f3fLL;
+
+template<class T>
+class SegmentTree {
+	struct Node {
+		T val;
+		Node(T x) : val(x) {}
+		Node () : val(0) {}
+	};
+	int N;
+	std::vector<T> a;
+	std::vector<Node> tr;
+	Node neutral;
+	inline Node join(const Node &a, const Node &b) {
+		return max(a.val, b.val);
+	}
+	void build(int node, int l, int r) {
+		if (l == r) {
+			tr[node] = Node(a[l]);
+			return;
+		}
+		int mid = l+(r-l)/2, lc = (node << 1);
+		build(lc, l, mid);
+		build(lc+1, mid+1, r);
+		tr[node] = join(tr[lc], tr[lc+1]);
+	}
+	Node query(int node, int l, int r, int ql, int qr) {
+		if (r < l or qr < l or r < ql) return neutral;
+		if (ql <= l and r <= qr) return tr[node];
+		int mid = l+(r-l)/2, lc = (node << 1);
+		return join(query(lc, l, mid, ql, std::min(qr, mid)), 
+			        query(lc+1, mid+1, r, std::max(mid+1, ql), qr));
+	}
+public:
+	template<class MyIterator>
+	SegmentTree (MyIterator begin, MyIterator end) {
+		N = end-begin-1;
+		tr.assign(4*N, 0);
+		a = std::vector<T>(begin, end);
+		build(1, 1, N);
+	}
+	SegmentTree (int n) : N(n) {
+		tr.assign(4*N, 0);
+		a.assign(N+1, 0);
+	}
+	T query(int l, int r) {
+		return query(1, 1, N, l, r).val;
+	}
+};
+
+int main() {
+  cin.tie(0)->sync_with_stdio(0);
+
+  int n; cin >> n;
+
+  vector<i64> a(n + 1), b(n + 1), c;
+
+  for (int i = 1; i <= n; ++i) {
+    cin >> a[i];
+  }
+  for (int i = 1; i <= n; ++i) {
+    cin >> b[i];
+  }
+
+  if (n == 1) {
+    cout << a[0]+b[0] << '\n';
+    return 0;
+  }
+
+  sort(a.begin(), a.end());
+  sort(b.begin(), b.end());
+
+  c = b;
+  reverse(c.begin() + 1, c.end());
+
+  i64 answer = INF;
+
+  vector<i64> d1(n + 1), d2(n + 1);
+
+  for (int i = 1; i <= n; ++i) {
+    d1[i] = a[i] + c[i];
+  }
+
+  d2[1] = a[1];
+  for (int i = 2; i <= n; ++i) {
+    d2[i] = a[i] + c[i - 1];
+  }
+
+  SegmentTree<int> S1(d1.begin(), d1.end());
+  SegmentTree<int> S2(d2.begin(), d2.end());
+
+  // for (int i = 1; i <= n; ++i) {
+  //   cout << S1.query(i, i) << "" \n""[i==n];
+  // }
+
+  // for (int i = 1; i <= n; ++i) {
+  //   cout << S2.query(i, i) << "" \n""[i==n];
+  // }
+
+  for (int i = 1; i <= n; i++) {
+    int lo = 1, hi = n, ans = -1;
+
+    while (lo <= hi) {
+      int mid = (lo + hi)/2;
+
+      i64 sum = a[i] + b[mid];
+
+      mid = n - mid + 1;
+
+      i64 mx = (
+        i == mid
+        ? max(S1.query(1, i-1), S1.query(i+1, n))
+        : max({ S1.query(1, min(i, mid)-1), S1.query(max(i, mid)+1, n), S2.query(min(i, mid) + 1, max(i, mid)) })
+      );
+
+      // cout << mid << "" -> "" << mx << '\n';
+
+      mid = n - mid + 1;
+
+      if (sum >= mx) {
+        ans = mid;
+        hi = mid - 1;
+      } else {
+        lo = mid + 1;
+      }
+    }
+
+    if (ans == -1) continue;
+
+    // cout << i << "" -> "" << a[i] << "" "" << b[ans] << '\n';
+
+    // mid
+    answer = min(answer, a[i] + b[ans]);
+  }
+
+  cout << (answer == INF ? a.back()+b.back() : answer) << '\n';
+}"
+Ke9XJx1i,cal ACME,teslariu,Python,Thursday 13th of July 2023 02:00:29 PM CDT,"#!/usr/b#in/env python
+# -*- coding: utf-8 -*-
+#
+""""""
+PARA HACER PORTABLE
+1) desde cmd de windows:
+pip install pyinstaller
+
+2) pyinstaller --onefile --noconsole <nombre del script>
+
+""""""
+
+
+import tkinter as tk
+from math import sqrt, pi, factorial
+
+
+def clic(tecla):
+	global calculo_consola
+	calculo_consola = calculo_consola + tecla
+	calculo.set(calculo_consola)
+	
+def limpieza():
+	global calculo_consola
+	calculo_consola = """"
+	calculo.set(""0"")
+	
+def hacer_cuenta():
+	global calculo_consola
+	
+	try:
+		resultado = str(eval(calculo_consola))
+	except Exception:
+		resultado = ""ERROR""
+		limpieza()
+	calculo.set(resultado)
+	
+def borrar_caracter():
+	global calculo_consola
+	calculo_consola = calculo_consola[:-1]
+	calculo.set(calculo_consola)
+	
+	
+
+# creo una variable (del lado consola) para calcular la cuenta en 
+# la pantalla
+calculo_consola = """"
+
+
+# creo el diseño de la calculadora
+calculadora = tk.Tk()
+calculadora.config(width=390, height=600, bg=""Light Steel Blue"")
+calculadora.title(""Calculadora ACME"")
+calculadora.resizable(False,False)
+# icono = tk.PhotoImage(file='icono.png')
+# calculadora.iconphoto(True, icono)
+
+# creo una variable (del lado gráfico) para mostrar la cuenta en 
+# la pantalla
+calculo = tk.StringVar()
+
+# llamo a limpieza antes de crear la pantalla
+limpieza()
+
+# diseño de la pantalla
+pantalla = tk.Entry(
+	width = 20,
+	bd = 18,
+	font = ('arial',20, 'bold'),
+	justify = 'right',
+	state = tk.DISABLED,
+	textvariable = calculo
+)
+pantalla.place(x=20, y=50)
+
+# diseño de las teclas
+ancho = 9
+alto = 2
+
+# fila cero
+tecla = tk.Button(text=""<<"", width=ancho, height=alto, fg=""white"", bg=""Dark Slate grey"", command=borrar_caracter)
+tecla.place(x=287, y=140)
+
+
+# primera fila: 1 2 3 +
+tecla = tk.Button(text=""1"", width=ancho, height=alto, command=lambda:clic(""1""))
+tecla.place(x=17, y=200)
+tecla = tk.Button(text=""2"", width=ancho, height=alto, command=lambda:clic(""2""))
+tecla.place(x=107, y=200)
+tecla = tk.Button(text=""3"", width=ancho, height=alto, command=lambda:clic(""3""))
+tecla.place(x=197, y=200)
+tecla = tk.Button(text=""+"", width=ancho, height=alto, bg=""cadet Blue"", command=lambda:clic(""+""))
+tecla.place(x=287, y=200)
+
+
+# segunda fila: 4 5 6 -
+tecla = tk.Button(text=""4"", width=ancho, height=alto, command=lambda:clic(""4""))
+tecla.place(x=17, y=260)
+tecla = tk.Button(text=""5"", width=ancho, height=alto, command=lambda:clic(""5""))
+tecla.place(x=107, y=260)
+tecla = tk.Button(text=""6"", width=ancho, height=alto, command=lambda:clic(""6""))
+tecla.place(x=197, y=260)
+tecla = tk.Button(text=""-"", width=ancho, height=alto, bg=""cadet Blue"", command=lambda:clic(""-""))
+tecla.place(x=287, y=260)
+
+
+# tercera fila: 7 8 9 x
+tecla = tk.Button(text=""7"", width=ancho, height=alto, command=lambda:clic(""7""))
+tecla.place(x=17, y=320)
+tecla = tk.Button(text=""8"", width=ancho, height=alto, command=lambda:clic(""8""))
+tecla.place(x=107, y=320)
+tecla = tk.Button(text=""9"", width=ancho, height=alto, command=lambda:clic(""9""))
+tecla.place(x=197, y=320)
+tecla = tk.Button(text=""x"", width=ancho, height=alto, bg=""cadet Blue"", command=lambda:clic(""*""))
+tecla.place(x=287, y=320)
+
+
+# cuarta fila: ( 0 ) /
+tecla = tk.Button(text=""("", width=ancho, height=alto, bg=""dodger Blue"", command=lambda:clic(""(""))
+tecla.place(x=17, y=380)
+tecla = tk.Button(text=""0"", width=ancho, height=alto, command=lambda:clic(""0""))
+tecla.place(x=107, y=380)
+tecla = tk.Button(text="")"", width=ancho, height=alto, bg=""dodger Blue"", command=lambda:clic("")""))
+tecla.place(x=197, y=380)
+tecla = tk.Button(text=""/"", width=ancho, height=alto, bg=""cadet Blue"", command=lambda:clic(""/""))
+tecla.place(x=287, y=380)
+
+
+# quinta fila: raiz cuadrada, punto decimal, potencia, resto
+tecla = tk.Button(text=""\u221A"", width=ancho, height=alto, bg=""dodger Blue"", command=lambda:clic(""sqrt(""))
+tecla.place(x=17, y=440)
+tecla = tk.Button(text=""."", width=ancho, height=alto, bg='dodger blue', command=lambda:clic("".""))
+tecla.place(x=107, y=440)
+tecla = tk.Button(text=""^"", width=ancho, height=alto, bg=""dodger Blue"", command=lambda:clic(""**""))
+tecla.place(x=197, y=440)
+tecla = tk.Button(text=""%"", width=ancho, height=alto, bg=""dodger Blue"", command=lambda:clic(""%""))
+tecla.place(x=287, y=440)
+
+
+# sexta fila: clear, factorial, pi, =
+tecla = tk.Button(text=""CL"", width=ancho, height=alto, fg=""white"", bg=""Dark Slate grey"", command=limpieza)
+tecla.place(x=17, y=500)
+tecla = tk.Button(text=""!"", width=ancho, height=alto, bg='dodger blue', command=lambda:clic(""factorial(""))
+tecla.place(x=107, y=500)
+tecla = tk.Button(text=""\u03C0"", width=ancho, height=alto, bg=""dodger Blue"", command=lambda:clic(str(pi)))
+tecla.place(x=197, y=500)
+tecla = tk.Button(text=""="", width=ancho, height=alto, fg=""white"", bg=""Dark Slate grey"", command=hacer_cuenta)
+tecla.place(x=287, y=500)
+
+
+calculadora.mainloop()
+"
+YHxVQBbJ,Untitled,BogBond,Python,Thursday 13th of July 2023 01:51:57 PM CDT,"masti = [""Крести"",""Пики"",""Черви"",""Буби""]
+nazvania = [""6"",""7"",""8"",""9"",""10"",""Prince"",""Dama"",""King"",""Tuse""]
+
+koloda = (y + "" "" + x for x in masti for y in nazvania)
+
+
+iter_koloda = iter(koloda)
+
+for x in range(36):
+    print(next(iter_koloda))
+    if x==35:
+        print(""Stop iteration"")"
+LiYmRYLF,Python dir,alaex777,Python,Thursday 13th of July 2023 01:44:57 PM CDT,"# 13.07.23
+
+print(dir(object))
+
+""""""
+['__class__', '__delattr__', '__dir__',
+'__doc__', '__eq__', '__format__',
+'__ge__', '__getattribute__', '__getstate__',
+'__gt__', '__hash__', '__init__',
+'__init_subclass__', '__le__', '__lt__',
+'__ne__', '__new__', '__reduce__',
+'__reduce_ex__', '__repr__', '__setattr__',
+'__sizeof__', '__str__', '__subclasshook__']
+""""""
+"
+6baXiZF3,Heisenberg Circuit,M_W,Python,Thursday 13th of July 2023 01:33:30 PM CDT,"from numpy.random import beta
+from qiskit.opflow import *
+n = 8
+m = n //2
+
+# Create a quantum circuit with n qubits
+circuit = QuantumCircuit(n)
+ops = []
+
+# Given parameters
+params = (0.5297, 0.5243, 0.7243, 0.6151, 0.6151, 0.7243, 0.5243, 0.5297)
+
+# Separate gamma and beta parameters
+#gamma = params[::2]
+gamma = [1,1,1,1,1,1,1,1,1,1]
+#beta = params[1::2]
+beta = [1,1,1,1,1,1,1,1,1,1,]
+theta = [1,1,1,1,1,1,1,1,1,1]
+
+print(gamma)
+print(beta)
+
+def HeisenbergHamiltonian(n, coef):
+    ops = []
+    for i in range(n):
+        ops.append((""I""*i + ""XX"" + ""I""*(n-i-2), coef))
+        ops.append((""I""*i + ""YY"" + ""I""*(n-i-2), coef))
+        ops.append((""I""*i + ""ZZ"" + ""I""*(n-i-2), coef))
+    # Periodic boundary conditions
+    ops.append((""X"" + ""I""*(n-2) + ""X"", coef))
+    ops.append((""Y"" + ""I""*(n-2) + ""Y"", coef))
+    ops.append((""Z"" + ""I""*(n-2) + ""Z"", coef))
+    return ops
+
+
+ops = HeisenbergHamiltonian(n,-1)
+print(ops)
+
+# the hamiltonian
+Heisenberg = PauliSumOp.from_list(ops)
+
+def cost_fn(circuit):
+  state = CircuitStateFn(circuit)
+  # Calculate the expectation value
+  expectation = ~(state) @ Heisenberg @ state
+  simplified = expectation.eval()
+  return simplified
+  #print('Expectation value:', simplified)
+
+# Make sure the number of qubits is even
+assert n % 2 == 0, ""Number of qubits must be even.""
+
+# Prepare Bell states
+for i in range(0, n, 2):
+    circuit.h(i)
+    circuit.cx(i, i+1)
+circuit.cx(0,n-1)
+
+for i in range(m):
+  g = gamma[i]
+  b = beta[i]
+
+  # H2
+  for j in range(0, n-1, 2):
+    circuit.rzz(2*g, j, j+1)
+    circuit.rxx(2*g,j,j+1)
+    circuit.ryy(2*g,j,j+1)
+  # H1
+  for j in range(1, n-1, 2):
+    circuit.rzz(2*b, j, j+1)
+    circuit.rxx(2*b, j, j+1)
+    circuit.ryy(2*b, j, j+1)
+  circuit.barrier()
+  # Boundary Case - H1 Case
+  circuit.rzz(2*b, 0, n-1)
+  circuit.rxx(2*b, 0, n-1)
+  circuit.ryy(2*b, 0, n-1)
+  circuit.barrier()
+
+exp_val = np.real(cost_fn(circuit))/n
+print(exp_val)
+circuit.draw('mpl')"
+4D8Gmc8c,L - Walking to School,danielvitor23,C++,Thursday 13th of July 2023 12:56:06 PM CDT,"#include <bits/stdc++.h>
+using namespace std;
+
+using ii = pair<int, int>;
+using i64 = long long;
+
+const int INF = 0x3f3f3f3f;
+
+int n, m, T;
+vector<vector<ii>> gr;
+
+i64 dijkstra(int source) {
+  vector<i64> dist(n+1, INF);
+
+  dist[source] = 0;
+
+  priority_queue<tuple<i64, i64, int>> pq;
+  pq.push({ 0, 0, source });
+
+  while (!pq.empty()) {
+    auto [d, r, u] = pq.top(); pq.pop();
+
+    if (d > dist[u]) continue;
+
+    for (auto [w, to] : gr[u]) {
+      if (dist[u] + r * w < dist[to]) {
+        dist[to] = dist[u] + r * w;
+
+        pq.push({ dist[to], r + (w == 0 ? 0 : 1), to });
+      }
+    }
+  }
+
+  return dist[T] == INF ? -1 : dist[T];
+}
+
+int main() {
+  cin.tie(0)->sync_with_stdio(0);
+
+  cin >> n >> m >> T, --T;
+
+  gr.assign(n, vector<ii>());
+
+  for (int i = 0; i < m; ++i) {
+    int a, b, c; cin >> a >> b >> c, --a, --b;
+
+    gr[a].push_back({ c, b });
+    gr[b].push_back({ c, a });
+  }
+
+  cout << dijkstra(0) << '\n';
+}"
+etgi8PKs,Nigerian scammers [13-7-1/2023],bombaires,HTML,Thursday 13th of July 2023 12:50:25 PM CDT,"<a href=""mailto:abrituoficina@remax.com.ar"">abrituoficina@remax.com.ar</a>
+<a href=""mailto:support@mekongsourcings.com"">support@mekongsourcings.com</a>
+<a href=""mailto:moneygramoffice55@aol.com"">moneygramoffice55@aol.com</a>
+<a href=""mailto:deptmanagementofficenigeria@gmail.com"">deptmanagementofficenigeria@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+18482@gmail.com"">deptmanagementofficenigeria+18482@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+30671@gmail.com"">deptmanagementofficenigeria+30671@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+446@gmail.com"">deptmanagementofficenigeria+446@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+18060@gmail.com"">deptmanagementofficenigeria+18060@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+20315@gmail.com"">deptmanagementofficenigeria+20315@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+22460@gmail.com"">deptmanagementofficenigeria+22460@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+20796@gmail.com"">deptmanagementofficenigeria+20796@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+20684@gmail.com"">deptmanagementofficenigeria+20684@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+472@gmail.com"">deptmanagementofficenigeria+472@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+24392@gmail.com"">deptmanagementofficenigeria+24392@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+14751@gmail.com"">deptmanagementofficenigeria+14751@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+31353@gmail.com"">deptmanagementofficenigeria+31353@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+6758@gmail.com"">deptmanagementofficenigeria+6758@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+23670@gmail.com"">deptmanagementofficenigeria+23670@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+3890@gmail.com"">deptmanagementofficenigeria+3890@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+13970@gmail.com"">deptmanagementofficenigeria+13970@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+32602@gmail.com"">deptmanagementofficenigeria+32602@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+13319@gmail.com"">deptmanagementofficenigeria+13319@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+6308@gmail.com"">deptmanagementofficenigeria+6308@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+11789@gmail.com"">deptmanagementofficenigeria+11789@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+6652@gmail.com"">deptmanagementofficenigeria+6652@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+21349@gmail.com"">deptmanagementofficenigeria+21349@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+18589@gmail.com"">deptmanagementofficenigeria+18589@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+16738@gmail.com"">deptmanagementofficenigeria+16738@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+19736@gmail.com"">deptmanagementofficenigeria+19736@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+22120@gmail.com"">deptmanagementofficenigeria+22120@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+16250@gmail.com"">deptmanagementofficenigeria+16250@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+30950@gmail.com"">deptmanagementofficenigeria+30950@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+23422@gmail.com"">deptmanagementofficenigeria+23422@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+14127@gmail.com"">deptmanagementofficenigeria+14127@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+11762@gmail.com"">deptmanagementofficenigeria+11762@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+787@gmail.com"">deptmanagementofficenigeria+787@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+26680@gmail.com"">deptmanagementofficenigeria+26680@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+18344@gmail.com"">deptmanagementofficenigeria+18344@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+31235@gmail.com"">deptmanagementofficenigeria+31235@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+4894@gmail.com"">deptmanagementofficenigeria+4894@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+29559@gmail.com"">deptmanagementofficenigeria+29559@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+2799@gmail.com"">deptmanagementofficenigeria+2799@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+28856@gmail.com"">deptmanagementofficenigeria+28856@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+14073@gmail.com"">deptmanagementofficenigeria+14073@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+12283@gmail.com"">deptmanagementofficenigeria+12283@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+10433@gmail.com"">deptmanagementofficenigeria+10433@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+14233@gmail.com"">deptmanagementofficenigeria+14233@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+8323@gmail.com"">deptmanagementofficenigeria+8323@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+12603@gmail.com"">deptmanagementofficenigeria+12603@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+28063@gmail.com"">deptmanagementofficenigeria+28063@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+4435@gmail.com"">deptmanagementofficenigeria+4435@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+12930@gmail.com"">deptmanagementofficenigeria+12930@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+15506@gmail.com"">deptmanagementofficenigeria+15506@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+31531@gmail.com"">deptmanagementofficenigeria+31531@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+4405@gmail.com"">deptmanagementofficenigeria+4405@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+18800@gmail.com"">deptmanagementofficenigeria+18800@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+14339@gmail.com"">deptmanagementofficenigeria+14339@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+21931@gmail.com"">deptmanagementofficenigeria+21931@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+30696@gmail.com"">deptmanagementofficenigeria+30696@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+30402@gmail.com"">deptmanagementofficenigeria+30402@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+2376@gmail.com"">deptmanagementofficenigeria+2376@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+8097@gmail.com"">deptmanagementofficenigeria+8097@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+29774@gmail.com"">deptmanagementofficenigeria+29774@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+12674@gmail.com"">deptmanagementofficenigeria+12674@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+19428@gmail.com"">deptmanagementofficenigeria+19428@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+14183@gmail.com"">deptmanagementofficenigeria+14183@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+3999@gmail.com"">deptmanagementofficenigeria+3999@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+14685@gmail.com"">deptmanagementofficenigeria+14685@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+13694@gmail.com"">deptmanagementofficenigeria+13694@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+4883@gmail.com"">deptmanagementofficenigeria+4883@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+987@gmail.com"">deptmanagementofficenigeria+987@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+20732@gmail.com"">deptmanagementofficenigeria+20732@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+8453@gmail.com"">deptmanagementofficenigeria+8453@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+16061@gmail.com"">deptmanagementofficenigeria+16061@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+23929@gmail.com"">deptmanagementofficenigeria+23929@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+20001@gmail.com"">deptmanagementofficenigeria+20001@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+20032@gmail.com"">deptmanagementofficenigeria+20032@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+20141@gmail.com"">deptmanagementofficenigeria+20141@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+23864@gmail.com"">deptmanagementofficenigeria+23864@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+3704@gmail.com"">deptmanagementofficenigeria+3704@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+23719@gmail.com"">deptmanagementofficenigeria+23719@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+9164@gmail.com"">deptmanagementofficenigeria+9164@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+3139@gmail.com"">deptmanagementofficenigeria+3139@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+5911@gmail.com"">deptmanagementofficenigeria+5911@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+7674@gmail.com"">deptmanagementofficenigeria+7674@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+6270@gmail.com"">deptmanagementofficenigeria+6270@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+17543@gmail.com"">deptmanagementofficenigeria+17543@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+32131@gmail.com"">deptmanagementofficenigeria+32131@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+2753@gmail.com"">deptmanagementofficenigeria+2753@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+14214@gmail.com"">deptmanagementofficenigeria+14214@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+10791@gmail.com"">deptmanagementofficenigeria+10791@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+21571@gmail.com"">deptmanagementofficenigeria+21571@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+23032@gmail.com"">deptmanagementofficenigeria+23032@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+23198@gmail.com"">deptmanagementofficenigeria+23198@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+27562@gmail.com"">deptmanagementofficenigeria+27562@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+11923@gmail.com"">deptmanagementofficenigeria+11923@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+689@gmail.com"">deptmanagementofficenigeria+689@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+28361@gmail.com"">deptmanagementofficenigeria+28361@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+3415@gmail.com"">deptmanagementofficenigeria+3415@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+4489@gmail.com"">deptmanagementofficenigeria+4489@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+7815@gmail.com"">deptmanagementofficenigeria+7815@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+4749@gmail.com"">deptmanagementofficenigeria+4749@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+7586@gmail.com"">deptmanagementofficenigeria+7586@gmail.com</a>
+<a href=""mailto:deptmanagementofficenigeria+4263@gmail.com"">deptmanagementofficenigeria+4263@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674@gmail.com"">unitedbankofafrica674@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+13538@gmail.com"">unitedbankofafrica674+13538@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+117@gmail.com"">unitedbankofafrica674+117@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+13947@gmail.com"">unitedbankofafrica674+13947@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+19969@gmail.com"">unitedbankofafrica674+19969@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+26775@gmail.com"">unitedbankofafrica674+26775@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+23062@gmail.com"">unitedbankofafrica674+23062@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+4658@gmail.com"">unitedbankofafrica674+4658@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+26920@gmail.com"">unitedbankofafrica674+26920@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+29076@gmail.com"">unitedbankofafrica674+29076@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+6391@gmail.com"">unitedbankofafrica674+6391@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+12582@gmail.com"">unitedbankofafrica674+12582@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+19097@gmail.com"">unitedbankofafrica674+19097@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+26277@gmail.com"">unitedbankofafrica674+26277@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+12581@gmail.com"">unitedbankofafrica674+12581@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+31132@gmail.com"">unitedbankofafrica674+31132@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+30119@gmail.com"">unitedbankofafrica674+30119@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+14565@gmail.com"">unitedbankofafrica674+14565@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+27345@gmail.com"">unitedbankofafrica674+27345@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+28288@gmail.com"">unitedbankofafrica674+28288@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+31206@gmail.com"">unitedbankofafrica674+31206@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+24187@gmail.com"">unitedbankofafrica674+24187@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+5314@gmail.com"">unitedbankofafrica674+5314@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+24114@gmail.com"">unitedbankofafrica674+24114@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+9002@gmail.com"">unitedbankofafrica674+9002@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+819@gmail.com"">unitedbankofafrica674+819@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+26681@gmail.com"">unitedbankofafrica674+26681@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+30417@gmail.com"">unitedbankofafrica674+30417@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+22794@gmail.com"">unitedbankofafrica674+22794@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+21454@gmail.com"">unitedbankofafrica674+21454@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+13277@gmail.com"">unitedbankofafrica674+13277@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+16690@gmail.com"">unitedbankofafrica674+16690@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+29127@gmail.com"">unitedbankofafrica674+29127@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+13193@gmail.com"">unitedbankofafrica674+13193@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+29701@gmail.com"">unitedbankofafrica674+29701@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+20571@gmail.com"">unitedbankofafrica674+20571@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+25545@gmail.com"">unitedbankofafrica674+25545@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+26966@gmail.com"">unitedbankofafrica674+26966@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+30320@gmail.com"">unitedbankofafrica674+30320@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+6732@gmail.com"">unitedbankofafrica674+6732@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+16961@gmail.com"">unitedbankofafrica674+16961@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+6223@gmail.com"">unitedbankofafrica674+6223@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+1487@gmail.com"">unitedbankofafrica674+1487@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+5561@gmail.com"">unitedbankofafrica674+5561@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+11881@gmail.com"">unitedbankofafrica674+11881@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+18029@gmail.com"">unitedbankofafrica674+18029@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+6266@gmail.com"">unitedbankofafrica674+6266@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+29259@gmail.com"">unitedbankofafrica674+29259@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+15081@gmail.com"">unitedbankofafrica674+15081@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+16707@gmail.com"">unitedbankofafrica674+16707@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+10397@gmail.com"">unitedbankofafrica674+10397@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+6410@gmail.com"">unitedbankofafrica674+6410@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+21186@gmail.com"">unitedbankofafrica674+21186@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+20022@gmail.com"">unitedbankofafrica674+20022@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+32746@gmail.com"">unitedbankofafrica674+32746@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+15858@gmail.com"">unitedbankofafrica674+15858@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+18091@gmail.com"">unitedbankofafrica674+18091@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+21086@gmail.com"">unitedbankofafrica674+21086@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+6647@gmail.com"">unitedbankofafrica674+6647@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+739@gmail.com"">unitedbankofafrica674+739@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+30270@gmail.com"">unitedbankofafrica674+30270@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+31839@gmail.com"">unitedbankofafrica674+31839@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+17633@gmail.com"">unitedbankofafrica674+17633@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+14012@gmail.com"">unitedbankofafrica674+14012@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+32062@gmail.com"">unitedbankofafrica674+32062@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+9428@gmail.com"">unitedbankofafrica674+9428@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+2144@gmail.com"">unitedbankofafrica674+2144@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+8301@gmail.com"">unitedbankofafrica674+8301@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+11630@gmail.com"">unitedbankofafrica674+11630@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+32263@gmail.com"">unitedbankofafrica674+32263@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+23910@gmail.com"">unitedbankofafrica674+23910@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+4436@gmail.com"">unitedbankofafrica674+4436@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+18646@gmail.com"">unitedbankofafrica674+18646@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+4108@gmail.com"">unitedbankofafrica674+4108@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+14380@gmail.com"">unitedbankofafrica674+14380@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+28291@gmail.com"">unitedbankofafrica674+28291@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+12386@gmail.com"">unitedbankofafrica674+12386@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+15209@gmail.com"">unitedbankofafrica674+15209@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+29758@gmail.com"">unitedbankofafrica674+29758@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+26886@gmail.com"">unitedbankofafrica674+26886@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+20642@gmail.com"">unitedbankofafrica674+20642@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+25768@gmail.com"">unitedbankofafrica674+25768@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+30931@gmail.com"">unitedbankofafrica674+30931@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+17789@gmail.com"">unitedbankofafrica674+17789@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+1253@gmail.com"">unitedbankofafrica674+1253@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+17743@gmail.com"">unitedbankofafrica674+17743@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+18049@gmail.com"">unitedbankofafrica674+18049@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+27475@gmail.com"">unitedbankofafrica674+27475@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+1387@gmail.com"">unitedbankofafrica674+1387@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+7951@gmail.com"">unitedbankofafrica674+7951@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+2141@gmail.com"">unitedbankofafrica674+2141@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+23337@gmail.com"">unitedbankofafrica674+23337@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+16948@gmail.com"">unitedbankofafrica674+16948@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+959@gmail.com"">unitedbankofafrica674+959@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+24993@gmail.com"">unitedbankofafrica674+24993@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+30916@gmail.com"">unitedbankofafrica674+30916@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+20941@gmail.com"">unitedbankofafrica674+20941@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+13671@gmail.com"">unitedbankofafrica674+13671@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+27946@gmail.com"">unitedbankofafrica674+27946@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+1235@gmail.com"">unitedbankofafrica674+1235@gmail.com</a>
+<a href=""mailto:unitedbankofafrica674+1957@gmail.com"">unitedbankofafrica674+1957@gmail.com</a>"
+rQ3iM2Fe,TooManyRequests: received 429 HTTP response,Vault-TecTradingCo,Python,Thursday 13th of July 2023 12:50:00 PM CDT,"Traceback (most recent call last):
+  File ""/root/Bots/Fallout76MarketplaceKarmaTransferBot/main.py"", line 258, in main
+    for comment in comment_stream:
+  File ""/root/Bots/Fallout76MarketplaceKarmaTransferBot/venv/lib/python3.10/site-packages/praw/models/util.py"", line 195, in stream_generator
+    for item in reversed(list(function(limit=limit, **function_kwargs))):
+  File ""/root/Bots/Fallout76MarketplaceKarmaTransferBot/venv/lib/python3.10/site-packages/praw/models/listing/generator.py"", line 63, in __next__
+    self._next_batch()
+  File ""/root/Bots/Fallout76MarketplaceKarmaTransferBot/venv/lib/python3.10/site-packages/praw/models/listing/generator.py"", line 89, in _next_batch
+    self._listing = self._reddit.get(self.url, params=self.params)
+  File ""/root/Bots/Fallout76MarketplaceKarmaTransferBot/venv/lib/python3.10/site-packages/praw/util/deprecate_args.py"", line 43, in wrapped
+    return func(**dict(zip(_old_args, args)), **kwargs)
+  File ""/root/Bots/Fallout76MarketplaceKarmaTransferBot/venv/lib/python3.10/site-packages/praw/reddit.py"", line 634, in get
+    return self._objectify_request(method=""GET"", params=params, path=path)
+  File ""/root/Bots/Fallout76MarketplaceKarmaTransferBot/venv/lib/python3.10/site-packages/praw/reddit.py"", line 739, in _objectify_request
+    self.request(
+  File ""/root/Bots/Fallout76MarketplaceKarmaTransferBot/venv/lib/python3.10/site-packages/praw/util/deprecate_args.py"", line 43, in wrapped
+    return func(**dict(zip(_old_args, args)), **kwargs)
+  File ""/root/Bots/Fallout76MarketplaceKarmaTransferBot/venv/lib/python3.10/site-packages/praw/reddit.py"", line 941, in request
+    return self._core.request(
+  File ""/root/Bots/Fallout76MarketplaceKarmaTransferBot/venv/lib/python3.10/site-packages/prawcore/sessions.py"", line 330, in request
+    return self._request_with_retries(
+  File ""/root/Bots/Fallout76MarketplaceKarmaTransferBot/venv/lib/python3.10/site-packages/prawcore/sessions.py"", line 266, in _request_with_retries
+    raise self.STATUS_EXCEPTIONS[response.status_code](response)
+prawcore.exceptions.TooManyRequests: received 429 HTTP response
+"
+ZM9Lb1vS,read/write test,Jakzon123,C++,Thursday 13th of July 2023 12:47:57 PM CDT,"#include <iostream>
+#include ""File.h""
+
+int main() {
+    std::string inputFilePath = ""input/car.tga"";
+    std::string outputFilePath = ""output/cartest.tga"";
+
+    // Create an instance of the File class
+    File file(inputFilePath);
+
+    // Print the header information
+    File::Header header = file.getHeader();
+    std::cout << ""Header Information:"" << std::endl;
+    std::cout << ""Width: "" << header.width << std::endl;
+    std::cout << ""Height: "" << header.height << std::endl;
+
+    // Write the modified file to a new file
+    file.WriteFile(outputFilePath);
+
+    return 0;
+}"
+j6Z4AEea,File.h,Jakzon123,C++,Thursday 13th of July 2023 12:47:28 PM CDT,"#pragma once
+#include <string>
+#include <fstream>
+
+class File {
+	public:
+
+		// storing file header data
+		struct Header {
+			char idLength;
+			char colorMapType;
+			char dataTypeCode;
+			short colorMapOrigin;
+			short colorMapLength;
+			char colorMapDepth;
+			short xOrigin;
+			short yOrigin;
+			short width;
+			short height;
+			char bitsPerPixel;
+			char imageDescriptor;
+		};
+
+		// storing pixel data
+		struct Pixel {
+			unsigned char blue;
+			unsigned char green;
+			unsigned char red;
+		};
+
+		// constructor and destructor
+		File(std::string fileName);
+		~File();
+
+		// define essential functions
+    bool ReadFile(std::string fileName);
+    bool WriteFile(std::string fileName);
+
+		Header readHeader(std::ifstream& file);
+		void writeHeader(Header header, std::ofstream& file);
+
+		Pixel** readPixelArray(std::ifstream& file, int width, int height);
+		void writePixelArray(Pixel** pixelArray, std::ofstream& file);
+
+    Header getHeader();
+
+	private:
+		Header header;
+		Pixel** pixelArray;
+};
+"
+SW7MTRyK,File.cpp,Jakzon123,C++,Thursday 13th of July 2023 12:46:41 PM CDT,"#include ""File.h""
+#include <string>
+#include <fstream>
+#include <iostream>
+
+// constructor
+File::File(std::string fileName) {
+    header = {};
+    pixelArray = nullptr;
+  
+    if (!ReadFile(fileName)) {
+        // file not read properly, explain error
+        std::cout << ""File read incorrectly."" << std::endl;
+    }
+}
+
+// destructor
+File::~File() {
+    // Free dynamically allocated memory for pixelArray
+    if (pixelArray != nullptr) {
+        for (int i = 0; i < header.height; ++i) {
+            delete[] pixelArray[i];
+        }
+        delete[] pixelArray;
+    }
+}
+
+// read file
+bool File::ReadFile(std::string fileName) {
+    // open file
+    std::ifstream file(fileName, std::ios::binary);
+
+    if (!file.is_open()) {
+        std::cout << ""Failed to open target file."" << std::endl;
+        return false;
+    }
+
+	  // read header from file
+    header = readHeader(file);
+
+    // read pixels into pixel array
+    pixelArray = readPixelArray(file, header.width, header.height);
+
+    // close file
+    file.close();
+
+    return true;
+}
+
+// write file
+bool File::WriteFile(std::string fileName) {
+    // open file
+    std::ofstream file(fileName, std::ios::binary);
+  
+    if (!file.is_open()) {
+        std::cout << ""Failed to open target file."" << std::endl;
+        return false;
+    }  
+
+    // write header to file
+    writeHeader(header, file);
+  
+  	// write pixel array to file
+  	writePixelArray(pixelArray, file); 
+
+    if (pixelArray == nullptr) {
+        return false;
+    }
+  
+    // close file
+    file.close();
+
+    return true;
+}
+
+// read header
+File::Header File::readHeader(std::ifstream& file) {
+    Header header;
+
+    // Read each component of the header
+    file.read(reinterpret_cast<char*>(&header.idLength), sizeof(char));
+    file.read(reinterpret_cast<char*>(&header.colorMapType), sizeof(char));
+    file.read(reinterpret_cast<char*>(&header.dataTypeCode), sizeof(char));
+    file.read(reinterpret_cast<char*>(&header.colorMapOrigin), sizeof(short));
+    file.read(reinterpret_cast<char*>(&header.colorMapLength), sizeof(short));
+    file.read(reinterpret_cast<char*>(&header.colorMapDepth), sizeof(char));
+    file.read(reinterpret_cast<char*>(&header.xOrigin), sizeof(short));
+    file.read(reinterpret_cast<char*>(&header.yOrigin), sizeof(short));
+    file.read(reinterpret_cast<char*>(&header.width), sizeof(short));
+    file.read(reinterpret_cast<char*>(&header.height), sizeof(short));
+    file.read(reinterpret_cast<char*>(&header.bitsPerPixel), sizeof(char));
+    file.read(reinterpret_cast<char*>(&header.imageDescriptor), sizeof(char));
+
+    return header;
+}
+
+// write header to file
+void File::writeHeader(Header header, std::ofstream& file) {
+    // write each component of the header
+    file.write(reinterpret_cast<char*>(&header.idLength), sizeof(char));
+    file.write(reinterpret_cast<char*>(&header.colorMapType), sizeof(char));
+    file.write(reinterpret_cast<char*>(&header.dataTypeCode), sizeof(char));
+    file.write(reinterpret_cast<char*>(&header.colorMapOrigin), sizeof(short));
+    file.write(reinterpret_cast<char*>(&header.colorMapLength), sizeof(short));
+    file.write(reinterpret_cast<char*>(&header.colorMapDepth), sizeof(char));
+    file.write(reinterpret_cast<char*>(&header.xOrigin), sizeof(short));
+    file.write(reinterpret_cast<char*>(&header.yOrigin), sizeof(short));
+    file.write(reinterpret_cast<char*>(&header.width), sizeof(short));
+    file.write(reinterpret_cast<char*>(&header.height), sizeof(short));
+    file.write(reinterpret_cast<char*>(&header.bitsPerPixel), sizeof(char));
+    file.write(reinterpret_cast<char*>(&header.imageDescriptor), sizeof(char));
+}
+
+File::Pixel** File::readPixelArray(std::ifstream& file, int width, int height) {
+    // create 2D array of pixels
+    Pixel** pixelArray = new Pixel*[width];
+
+    // read pixels row as many pixels of w/h
+    for (int i = 0; i < width; ++i) {
+      pixelArray[i] = new Pixel[height];
+      file.read(reinterpret_cast<char*>(pixelArray[i]), sizeof(Pixel) * height);
+    }
+
+    return pixelArray;
+}
+
+
+void File::writePixelArray(Pixel** pixelArray, std::ofstream& file) {
+    for (int i = 0; i < header.height; ++i) {
+        file.write(reinterpret_cast<char*>(pixelArray[i]), sizeof(Pixel) * header.width);
+    }
+}
+
+File::Header File::getHeader() {
+    return header;
+}"
+Jh99cVaa,sendmail_eposter_employee_registration.php,rivg26,PHP,Thursday 13th of July 2023 12:45:43 PM CDT,"<?php
+
+// email libraries/credentials
+require_once ""{$root}vendor/autoload.php"";
+use Mailgun\Mailgun;
+
+// load email template object
+require_once ""{$root}classes/EmailTemplate.php"";
+require_once ""{$root}classes/PrimarySender.php"";
+use PrimarySender\PrimarySender;
+use EmailTemplate\EmailTemplate;
+$email_template = new EmailTemplate($db, $root);
+
+// get email template 'applied-to' id and type
+if($company_id != 0){
+	$et_xid = $company_id;
+	$et_xtype = 'companies';
+} else {
+	$et_xid = ""{$affiliate_id}"";
+	$et_xtype = 'affiliates';
+}
+
+// get employer name
+if($company_id != 0){
+	$employer_name = $company_name;
+} else {
+	if($affiliate == 'Renge'){
+		$employer_name = 'Renge Learning';
+	} else {
+		$employer_name = $affiliate . ' (affiliate)';
+	}
+}
+
+// get employer admin email and name
+$collection = $db->UserAccount;
+
+$pm_sender = new PrimarySender($db);
+$employee_primary_sender = $pm_sender->getEmployeePrimarySender($company_id, $affiliate_id);
+$employer_admin_email = $employee_primary_sender['employer_admin_email'];
+$employer_admin_name = $employee_primary_sender['employer_admin_name'];
+
+// assemble tags data
+$tags_data = [
+				'first_name' => ucwords(strtolower($fname)),
+				'last_name' => ucwords(strtolower($lname)),
+				'employer_name' => $employer_name,
+				'username' => $username,
+				'temp_password' => $temp_password,
+				'employer_admin_email' => $employer_admin_email,
+				'employer_admin_name' => $employer_admin_name
+];
+
+// generate email subject and body
+$res = $email_template->generate_email_message('eposter_employee_registration', $et_xid, $et_xtype, $tags_data);
+									
+// send email via mailgun API
+if($res['status'] == 'ok'){
+
+	// get mailgun credentials
+	if($company_id != 0){
+		$mailgun_credentials = $email_template->getEmployerMailgun($company_id);
+	} else {
+		$mailgun_credentials = $email_template->getAffiliateMailgun($affiliate_id);
+	}
+
+	$email_subject = $res['email_subject'];
+	$email_body = $res['email_body'];
+	$mg = new Mailgun($mailgun_credentials['api_key']);
+	$messageBldr = $mg->MessageBuilder();
+	$messageBldr->setFromAddress($mailgun_credentials['emailer']);
+	$messageBldr->addToRecipient($email);
+	$messageBldr->setSubject($email_subject);
+	$messageBldr->setHtmlBody($email_body);
+	$mg->post(""{$mailgun_credentials['domain']}/messages"", $messageBldr->getMessage());
+}
+?>"
+mnFZFTWn,Untitled,onilink_,C++,Thursday 13th of July 2023 12:43:26 PM CDT,"void downscale(ImageBuffer& im_src)
+{
+    ImageBuffer im_dst;
+    im_dst.wid = im_src.wid / 2;
+    im_dst.hei = im_src.hei / 2;
+    im_dst.buffer.resize(uint64_t(im_dst.wid) * im_dst.hei * 4);
+    
+    const unsigned W = im_src.wid * 4;
+    
+    #pragma omp parallel for
+    for(unsigned y=0; y<im_dst.hei; y++) {
+        for(unsigned x=0; x<im_dst.wid; x++) {
+            unsigned src_x = x * 2;
+            unsigned src_y = y * 2;
+            unsigned src_idx = (src_x + src_y * im_src.wid) * 4;
+            unsigned dst_idx = (x + y*im_dst.wid) * 4;
+            
+            for(unsigned n=0; n<4; ++n)
+            {
+                im_dst.buffer[dst_idx+n] = (0u + 
+                        uint8_t(im_src.buffer[src_idx+n]) +
+                        uint8_t(im_src.buffer[src_idx+n+4]) +
+                        uint8_t(im_src.buffer[src_idx+n+W]) +
+                        uint8_t(im_src.buffer[src_idx+n+W+4]))/4;
+            }
+        }
+    }
+    
+    std::swap(im_src, im_dst);
+}"
+SdZvaLWb,Untitled,wclovers,CSS,Thursday 13th of July 2023 12:27:43 PM CDT,"@media screen and (max-width: 480px) {
+    #wcfm_store_header .header_right {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    #wcfm_store_header .header_right .bd_icon_area.lft {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        position: initial !important;
+    }
+}"
+r0XRbitd,Untitled,bgabrovsek,Python,Thursday 13th of July 2023 12:21:16 PM CDT,"
+
+def ROTATE_TRAJECTORIES(data, angle_x, angle_y, angle_z):
+    """"""
+    Rotates the data in 3D by rotating for angles degrees around x, y and z axis.
+    Args:
+        data: input list of sequences of xzy trajectory, shape (n, m, 3)
+        angles_x, angles_y, angles_z: list of angles for each coordinates
+    Returns: new data
+
+    """"""
+    from scipy.spatial.transform import Rotation as R
+
+    print(""Rotating data by"", angle_x, ""around x"", angle_y, ""around y"", angle_z, ""around z"")
+
+    num_traj = data.shape[0]
+    data = data.reshape((-1,3))  # put all trajectories as one long trajectories
+    rot = R.from_euler('xyz', [angle_x, angle_y, angle_z], degrees=True)
+    new_data = rot.apply(data).reshape((num_traj,-1,3))  # rotate and split trajectories
+    data.reshape(num_traj,-1,3)
+    return new_data
+
+
+...
+##### FITTING THE MODEL #####
+angles = [0, 30, 45, 60]
+full_epochs = 1  # number of times all rotations are processed (repeated)
+batch_size = 32
+epoch_counter = 0
+all_epochs = full_epochs * (len(angles) ** 3)
+
+for fepoch in range(full_epochs):
+    for rot_vec in product(angles, repeat=3):
+        print(f""*** Epoch {epoch_counter + 1} of {all_epochs} ***"")
+        data_train_rotated = ROTATE_TRAJECTORIES(data_train_x, *rot_vec)
+        print(""Training data with shapes"", data_train_rotated.shape, ""and"", data_train_y.shape)
+
+        # split (sub)batches
+        num_batches = len(data_train_rotated) // batch_size
+        for batch in range(num_batches):
+
+            start_idx = batch * batch_size
+            end_idx = start_idx + batch_size
+
+            x_batch = data_train_rotated[start_idx:end_idx]
+            y_batch = data_train_y[start_idx:end_idx]
+
+            if STACK_3TO9:
+                x_batch = theta3to9(x_batch)
+                #print(""converting 3 to 9"")
+
+            loss, accuracy = model.train_on_batch(x_batch, y_batch)
+
+            if batch % 100 == 0:
+                print()
+                test_loss, test_accuracy = model.evaluate(data_test_x, data_test_y)
+                #print(""Test Loss:"", test_loss)
+                #print(""Test Accuracy:"", test_accuracy)
+
+                print(
+                    f""Epoch: {epoch_counter + 1}/{all_epochs}, Batch: {batch + 1}/{num_batches},""
+                    f"" Loss: {loss:.4f}, Accuracy: {accuracy:.4f},""
+                    f""Test Loss: {test_loss:.4f}, Accuracy: {test_accuracy:.4f}"")
+"
+83CAgM1Y,Botania Flower Crafting,jBlume,Lua,Thursday 13th of July 2023 12:06:10 PM CDT,"--Slot 1: empty Bucket (2x2. water source under)
+--Slot 2-?: craft items split in to drop one of each
+--Final Slot: Seeds (to complete the flower)
+
+while true do
+
+--refill Petal appothecary
+ turtle.select(1)
+ turtle. placeDown()
+ turtle. place()
+
+--cycle drop for recipe
+ s=2
+ for i=1,5 do
+  turtle.select(s)
+  turtle.drop(1)
+  s=s+1
+ end
+
+--pick up flower creation
+ turtle.suck()
+end"
+Hb9jxXzH,Server,capitan007,C#,Thursday 13th of July 2023 12:04:13 PM CDT,"using Akka.Actor;
+using Akka.Configuration;
+using Akka.IO;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Загрузка конфигурации Akka.NET
+        var config = ConfigurationFactory.ParseString(@""
+            akka {
+                actor {
+                    provider = """"Akka.Remote.RemoteActorRefProvider, Akka.Remote""""
+                }
+                remote {
+                    dot-netty.tcp {
+                        port = 8081
+                        hostname = localhost
+                    }
+                }
+            }
+        "");
+
+        // Создание акторной системы
+        var system = ActorSystem.Create(""ChatSystem"", config);
+
+        // Создание актора сервера
+        var serverActor = system.ActorOf<ServerActor>(""ServerActor"");
+
+        // Ожидание нажатия клавиши для завершения работы сервера
+        Console.WriteLine(""Нажмите любую клавишу для выхода..."");
+        Console.ReadKey();
+
+        // Остановка акторной системы
+        system.Terminate().Wait();
+    }
+}
+
+public class ServerActor : ReceiveActor
+{
+    private IActorRef chatRoom;
+
+    public ServerActor()
+    {
+        chatRoom = Context.ActorOf<ChatRoomActor>(""ChatRoomActor"");
+
+        Receive<string>(message =>
+        {
+            // Пересылка сообщения в чат-комнату
+            chatRoom.Tell(message);
+        });
+    }
+}
+
+public class ChatRoomActor : ReceiveActor
+{
+    public ChatRoomActor()
+    {
+        Receive<string>(message =>
+        {
+            // Вывод сообщения в консоль
+            Console.WriteLine(""Сообщение: "" + message);
+
+            // Отправка сообщения всем клиентам
+            Context.ActorSelection(""/user/ClientActor*"").Tell(message);
+        });
+    }
+}
+"
+vEthjKww,dan-masek Adding support for len in pybind11 enum -- version 2,dan-masek,Python,Thursday 13th of July 2023 11:43:07 AM CDT,"#include <pybind11/pybind11.h>
+
+namespace py = pybind11;
+
+enum class Kind { Kind1 = 1, Kind2, Kind3 };
+
+
+py::object get_pybind11_metaclass()
+{
+    auto &internals = py::detail::get_internals();
+    return py::reinterpret_borrow<py::object>((PyObject*)internals.default_metaclass);
+}
+
+py::object get_standard_metaclass()
+{
+    auto &internals = py::detail::get_internals();
+    return py::reinterpret_borrow<py::object>((PyObject *)&PyType_Type);
+}
+
+py::object create_enum_metaclass()
+{
+    auto pybind11_metaclass = get_pybind11_metaclass();
+    auto standard_metaclass = get_standard_metaclass();
+
+    py::dict attributes;
+    attributes[""__len__""] = py::cpp_function(
+        [](py::object cls) {
+            return py::len(cls.attr(""__entries""));
+        }
+        , py::is_method(py::none())
+        );
+    return standard_metaclass(std::string(""pybind11_ext_enum"")
+        , py::make_tuple(pybind11_metaclass)
+        , attributes);
+}
+
+PYBIND11_MODULE(so07, m)
+{
+    auto enum_metaclass = create_enum_metaclass();
+    py::enum_<Kind>(m, ""Kind"", py::metaclass(enum_metaclass))
+        .value(""Kind1"", Kind::Kind1)
+        .value(""Kind2"", Kind::Kind2)
+        .value(""Kind3"", Kind::Kind3)
+        ;
+}
+"
+rsRSQFy4,GetCompleteChatSessionsAsync,YupItsTopher,C#,Thursday 13th of July 2023 11:35:59 AM CDT,"/// <inheritdoc/>
+public async Task<PagedResult<ChatSession>> GetCompleteChatSessionsAsync(int currentPage, int pageSize, int userID, string companyName, string startDate, string endDate)
+{
+    using var context = new PermittingReadContext();
+    var chatSessions = new List<ChatSession>();
+
+    chatSessions = (await context.Query(""LIVECHATSESSION as lcs"")
+                                 .Select(""lcs.{ LVCS_ID, LVCS_STATUS, PROS_USER_ID, USER_NAME, PROS_SUPPORT_USER_ID, LVCS_SCREENNAME, LVCS_STARTTIMESTAMP, LVCS_ENDTIMESTAMP, LVCS_REQUESTED_SUPPORT_USER_ID, LVCS_SUPPORT_USER_SCREENNAME, LVCS_GROUP_ID }"",
+                                         ""c.CUST_NM as CUSTOMER_COMPANY_NAME"")
+                                 .Join(""PROS_USER as susr"", ""lcs.PROS_SUPPORT_USER_ID"", ""susr.PROS_USER_ID"")
+                                 .Join(""PROS_USER as cusr"", ""lcs.PROS_USER_ID"", ""cusr.PROS_USER_ID"")
+                                 .LeftJoin(""CUST as c"", ""cusr.CUST_ID"", ""c.CUST_ID"")
+                                 .When(!string.IsNullOrWhiteSpace(companyName) && userID <= 0, q => q.Where(""c.CUST_NM"", ""like"", companyName), 
+                                    q => q.When(!string.IsNullOrWhiteSpace(companyName) && userID > 0, q => q.Where(""lcs.PROS_SUPPORT_USER_ID"", userID).Where(""c.CUST_NM"", ""like"", companyName), 
+                                    q => q.When(userID > 0, q => q.Where(""lcs.PROS_SUPPORT_USER_ID"", userID))))
+                                 .Where(q => q.Where(""lcs.LVCS_STATUS"", ""0"").OrWhere(""lcs.LVCS_STATUS"", ""U""))
+                                 .WhereBetween(""LVCS_ENDTIMESTAMP"", startDate, endDate)
+                                 .OrderByDesc(""lcs.LVCS_ENDTIMESTAMP"")
+                                 .GetAsync<ChatSession>())
+                                 .ToList();
+
+    var paginatedList = chatSessions.Paginate(currentPage, pageSize).ToList();
+    var unpaginatedList = chatSessions.ToList();
+
+    return new PagedResult<ChatSession>
+    {
+        Results = paginatedList,
+        PageCount = unpaginatedList.Count > 0 ? unpaginatedList.Count.GetPageCount(pageSize) : 0
+    };
+}"
+5GZ8rc2L,№21. RPG: Улучшения,Chl_Snt,Python,Thursday 13th of July 2023 11:29:16 AM CDT,"import random
+import time
+
+
+class Player:
+    def __init__(self, name, hp, damage):
+        self.name = name
+        self.hp = hp
+        self.damage = damage
+        self.xp = 0
+        self.lvl = 1
+        self.heals = 2
+
+    def attack(self, victim):
+        victim.hp -= self.damage
+        print(f""Ты нанёс врагу {self.damage} ⚔️. Теперь у него {victim.hp} ❤️."")
+        if victim.hp <= 0:
+            print(f""{victim.name} повержен!"")
+            self.xp += victim.xp
+            print(f""Ты получил {victim.xp} опыта! Теперь у тебя {self.lvl} LVL и {self.xp} XP."")
+            if self.xp >= 100:
+                self.lvl += 1
+                print(f""ПОЗДРАВЛЯЮ! Уровень повышен: {self.lvl}"")
+                self.xp = 0
+                self.damage *= 1.5
+                print(f""Ты стал сильнее! ⚔️: {self.damage}"")
+
+            luck = random.randint(0, 1)
+            if luck == 1:
+                self.heals += 1
+                print(f""Ты получил Лечебный отвар🧋! Теперь у тебя их {self.heals} ед."")
+            return False
+        else:
+            return True
+
+
+class Enemy:
+    races = {
+        ""Слизняк"": (10, 10),
+        ""Волк"": (25, 20),
+        ""Орк"": (50, 45),
+        ""Группа гоблинов"": (120, 25),
+        ""Оборотень"": (150, 50)
+    }
+
+    def __init__(self):
+        self.name = random.choice(list(self.races.keys()))
+        self.hp = self.races[self.name][0]
+        self.damage = self.races[self.name][1]
+        self.xp = self.hp * 1.5
+
+    def attack(self, victim):
+        victim.hp -= self.damage
+        print(f""{self.name} нанёс тебе {self.damage} ⚔️. Теперь у тебя {victim.hp} ❤️."")
+        if victim.hp <= 0:
+            exit(print(""ПОТРАЧЕНО!""))
+        else:
+            return True
+
+
+def create_hero(name, race, prof):
+    hp = 100
+    dmg = 25
+    hp *= races[race][0]
+    hp *= profs[prof][0]
+    dmg *= races[race][1]
+    dmg *= profs[prof][1]
+    hero = Player(name, hp, dmg)
+    return hero
+
+
+def start(heal=None):
+    if heal is None:
+        enemy = Enemy()
+    else:
+        enemy = heal
+    print(f""Тебе встретился {enemy.name}. ❤️: {enemy.hp}, ⚔️: {enemy.damage}"")
+    print(""Нападать?"")
+    answer = input(""Да/Нет/Лечиться: "").lower()
+    if answer == ""да"":
+        fight(enemy)
+    elif answer == ""лечиться"":
+        if hero.heals > 0:
+            hero.hp += 50
+            hero.heals -= 1
+            print(f""Ты выпил Лечебный отвар🧋. ❤️: {hero.hp}"")
+        else:
+            print(""У тебя нет больше отвара."")
+        start(enemy)
+    else:
+        luck = random.randint(1, 100)
+        if luck in range(40):
+            print(""Ты смог незаметно ускользнуть и пойти дальше!"")
+            time.sleep(2)
+            start()
+        else:
+            print(""Ты НЕ смог незаметно ускользнуть!"")
+            time.sleep(2)
+            enemy.attack(hero)
+            fight(enemy)
+
+
+def fight(victim):
+    result = hero.attack(victim)
+    time.sleep(1)
+    if result:
+        victim.attack(hero)
+        time.sleep(1)
+        fight(victim)
+    else:
+        start()
+
+
+name = input(""Введи своё имя: "")
+
+races = {
+    ""эльф"": (1.5, 1),
+    ""гном"": (0.8, 1.2),
+    ""человек"": (1, 1)
+}
+
+profs = {
+    ""лучник"": (0.9, 2),
+    ""щитоносец"": (2, 0.6),
+    ""рыцарь"": (1.2, 1.2)
+}
+
+race = """"
+prof = """"
+while race not in tuple(races.keys()):
+    print(f""Выбери расу: {tuple(races.keys())}"")
+    race = input(""-> "").lower()
+
+while prof not in tuple(profs.keys()):
+    print(f""Выбери профессию: {tuple(profs.keys())}"")
+    prof = input(""-> "").lower()
+
+hero = create_hero(name, race, prof)
+print(f""Здравствуй, герой с именем {hero.name}!\n""
+      f""Твоё здоровье равно {hero.hp} ХП.\n""
+      f""Твой урон равен {hero.damage} единицам.\n""
+      f""Желаю удачи в приключениях, странник! ^_+"")
+time.sleep(1)
+start()
+"
+RmnpfcnG,Adding support for len in pybind11 enum -- version 1,dan-masek,Python,Thursday 13th of July 2023 11:25:19 AM CDT,"#include <pybind11/pybind11.h>
+
+namespace py = pybind11;
+
+enum class Kind { Kind1 = 1, Kind2, Kind3 };
+
+
+py::object get_pybind11_metaclass()
+{
+    auto &internals = py::detail::get_internals();
+    return py::reinterpret_borrow<py::object>((PyObject*)internals.default_metaclass);
+}
+
+py::object get_standard_metaclass()
+{
+    auto &internals = py::detail::get_internals();
+    return py::reinterpret_borrow<py::object>((PyObject *)&PyType_Type);
+}
+
+py::object create_enum_metaclass()
+{
+    auto pybind11_metaclass = get_pybind11_metaclass();
+    auto standard_metaclass = get_standard_metaclass();
+
+    py::dict attributes;
+    attributes[""__len__""] = py::cpp_function(
+        [](py::object cls) {
+            return cls.attr(""_member_count"")();
+        }
+        , py::is_method(py::none())
+        );
+    return standard_metaclass(std::string(""pybind11_ext_enum"")
+        , py::make_tuple(pybind11_metaclass)
+        , attributes);
+}
+
+PYBIND11_MODULE(so07, m)
+{
+    auto enum_metaclass = create_enum_metaclass();
+    py::enum_<Kind>(m, ""Kind"", py::metaclass(enum_metaclass))
+        .value(""Kind1"", Kind::Kind1)
+        .value(""Kind2"", Kind::Kind2)
+        .value(""Kind3"", Kind::Kind3)
+        .def_static(""_member_count"", []() {
+            return 3;
+        });
+}
+"
+vRrmPb62,Advanced AND - Donald AND Duck AND Hello,wheresTheAnyKey,C,Thursday 13th of July 2023 11:18:00 AM CDT,"Pasted at: 13/07/2023 17:18
+Test data generated by 98823c9ce7f73d22c0e84a43ab6f6ed3
+
+DATA_ID_TESTDATATOFIND
+hello, donald was a duck
+
+5502491997132108
+
+Fuzzy-Wuzzy	- DASH
+Fuzzy;Wuzzy	- COLON
+Fuzzy!Wuzzy	- EXCLAMATION
+Fuzzy£Wuzzy	- POUND
+Fuzzy#Wuzzy	- HASH
+Fuzzy%Wuzzy	- PERCENT
+Fuzzy@Wuzzy	- AT
+Fuzzy&Wuzzy	- AND
+Fuzzy=Wuzzy	- EQUAL
+Fuzzy§Wuzzy
+Fuzzy~Wuzzy
+Fuzzy?Wuzzy	 - QUESTION MARK
+Fuzzy$Wuzzy	 - DOLLAR
+Fuzzy[Wuzzy] - BRACKETS
+Fuzzy^Wuzzy
+Fuzzy(Wuzzy) - BRACKETS
+Fuzzy+Wuzzy	 - PLUS
+Fuzzy±Wuzzy	 - PLUS/MINUE
+Fuzzy|Wuzzy	 - PIPE
+Fuzzy/Wuzzy	 - FORWARDSLASH
+Fuzzy<Wuzzy> - BRACKETS
+Fuzzy{Wuzzy} - CURLY
+Fuzzy\Wuzzy  - BACKSLASH
+"
+ZKVfG4Ch,Financial What's Inside - Email/IP/Bank,wheresTheAnyKey,C,Thursday 13th of July 2023 11:17:59 AM CDT,"Pasted at: 13/07/2023 17:17
+Test data generated by 98823c9ce7f73d22c0e84a43ab6f6ed3
+What's Inside Paste 
+
+5378496492418234
+5571598708435236
+5587663820997281
+5502491997132108
+5516931903918995
+5322909948799236
+5443317136071703
+5409137465238695
+5497550044220575
+5559606180091553
+
+aaribaud@att.net
+aaribaud@comcast.net
+aaribaud@att.com
+aaribaud@att.co.uk
+aaribaud@yahoo.com
+
+246.107.72.199
+221.187.199.189
+3.109.3.44
+109.112.85.139
+250.83.213.179
+169.141.201.234
+50.180.50.59
+20.181.54.231
+64.235.191.167
+48.103.36.43"
+uwsPkWXN,Financial with SPECIAL CHARACTERS,wheresTheAnyKey,C,Thursday 13th of July 2023 11:17:57 AM CDT,"Pasted at: 13/07/2023 17:17
+Test data generated by 98823c9ce7f73d22c0e84a43ab6f6ed3
+
+DATA_ID_TESTDATATOFIND
+
+5148-2121-6312-7114   - DASHES
+5148212163127114
+5107-4578-0576-9075   - DASHES
+5107457805769075
+3488-1760-1454-729   - DASHES
+348817601454729
+
+Fuzzy-Wuzzy	- DASH
+Fuzzy;Wuzzy	- COLON
+Fuzzy!Wuzzy	- EXCLAMATION
+Fuzzy£Wuzzy	- POUND
+Fuzzy#Wuzzy	- HASH
+Fuzzy%Wuzzy	- PERCENT
+Fuzzy@Wuzzy	- AT
+Fuzzy&Wuzzy	- AND
+Fuzzy=Wuzzy	- EQUAL
+Fuzzy§Wuzzy
+Fuzzy~Wuzzy
+Fuzzy?Wuzzy	 - QUESTION MARK
+Fuzzy$Wuzzy	 - DOLLAR
+Fuzzy[Wuzzy] - BRACKETS
+Fuzzy^Wuzzy
+Fuzzy(Wuzzy) - BRACKETS
+Fuzzy+Wuzzy	 - PLUS
+Fuzzy±Wuzzy	 - PLUS/MINUE
+Fuzzy|Wuzzy	 - PIPE
+Fuzzy/Wuzzy	 - FORWARDSLASH
+Fuzzy<Wuzzy> - BRACKETS
+Fuzzy{Wuzzy} - CURLY
+Fuzzy\Wuzzy  - BACKSLASH"
+TLf4Egpz,Domains with SPECIAL CHARS,wheresTheAnyKey,C,Thursday 13th of July 2023 11:17:55 AM CDT,"Pasted at: 13/07/2023 17:17
+Test data generated by 98823c9ce7f73d22c0e84a43ab6f6ed3
+
+DATA_ID_TESTDATATOFIND
+
+www.qatesting.com
+blog.qatesting.com
+www.qatesting.com/index.html
+www.qatesting.com/home
+www.qatestingblog.com
+www.qatestingtutorials.com
+shop.qatesting.co.uk
+admin.qatesting.io 
+qatesting
+qatesting.co.uk
+qatesting.cn
+qatesting.io
+findmetesting.com
+www.qatesting-blog.com
+www.qatesting-blog23.com
+www.qatesting
+www.qatesting.co.uk
+www.qatesting.cn
+www.qatesting.io
+www.findmetesting.com
+www.wobsut.gov
+
+The difference is that QA is process oriented and QC is product oriented.
+
+Testing, therefore is product oriented and thus is in the QC domain. Testing for quality isn't assuring quality, it's controlling it.
+
+
+
+Fuzzy-Wuzzy	- DASH
+Fuzzy;Wuzzy	- COLON
+Fuzzy!Wuzzy	- EXCLAMATION
+Fuzzy£Wuzzy	- POUND
+Fuzzy#Wuzzy	- HASH
+Fuzzy%Wuzzy	- PERCENT
+Fuzzy@Wuzzy	- AT
+Fuzzy&Wuzzy	- AND
+Fuzzy=Wuzzy	- EQUAL
+Fuzzy§Wuzzy
+Fuzzy~Wuzzy
+Fuzzy?Wuzzy	 - QUESTION MARK
+Fuzzy$Wuzzy	 - DOLLAR
+Fuzzy[Wuzzy] - BRACKETS
+Fuzzy^Wuzzy
+Fuzzy(Wuzzy) - BRACKETS
+Fuzzy+Wuzzy	 - PLUS
+Fuzzy±Wuzzy	 - PLUS/MINUE
+Fuzzy|Wuzzy	 - PIPE
+Fuzzy/Wuzzy	 - FORWARDSLASH
+Fuzzy<Wuzzy> - BRACKETS
+Fuzzy{Wuzzy} - CURLY
+Fuzzy\Wuzzy  - BACKSLASH
+"
+19dHxysA,ALL Keywords with Excluded Words,wheresTheAnyKey,C,Thursday 13th of July 2023 11:17:53 AM CDT,"Pasted at: 13/07/2023 17:17
+Test data generated by 98823c9ce7f73d22c0e84a43ab6f6ed3
+
+DATA_ID_TESTDATATOFIND 
+
+The dystopian version of superintelligence is illustrated with frequency by leaders in the technology industry, and is famously depicted by Hollywood in films like Terminator, 
+or more recently Ex Machina, and even the Avengers. The “furious deity A.I.” is a story you know, because it is the story you are constantly told: we build the thinking machine, 
+it surpasses our abilities in every way, and it destroys us for one of any number of reasons.Maybe it perceives us as a threat. Maybe we’re just in its way, 
+and it hardly perceives us at all — mankind, a disposable insect race.
+
+There are of course many arguments in opposition to the now ubiquitous concept of our apocalypse by artificial intelligence. 
+I myself have called into question the logic of such dystopian arguments in Anatomy of Next. But our subject here is less pertaining to the nature of the conscious machine than 
+it is to the way we talk about this subject, and what it means. First, consider that most of the artificial intelligence depicted in culture looks human, a representation with 
+no basis in technological reality. Then, the true scope of the Singularity is almost impossible to predict, which begs a question: where are these opinions about the broadly 
+unknowable coming from?"
+PgGr9dEJ,All Keywords with ANY Additional Words,wheresTheAnyKey,C,Thursday 13th of July 2023 11:17:52 AM CDT,"Pasted at: 13/07/2023 17:17
+Test data generated by 98823c9ce7f73d22c0e84a43ab6f6ed3
+
+DATA_ID_TESTDATATOFIND KEYWAUTO
+
+The dystopian version of superintelligence is illustrated with frequency by leaders in the technology industry, and is famously depicted by Hollywood in films like Terminator, or more recently Ex Machina, and even the Avengers. The “angry god A.I.” is a story you know, because it is the story you are constantly told: we build the thinking machine, it surpasses our abilities in every way, and it destroys us for one of any number of reasons.
+Maybe it perceives us as a threat. Maybe we’re just in its way, and it hardly perceives us at all — humanity, a disposable insect race.
+
+There are of course many arguments in opposition to the now ubiquitous concept of our apocalypse by artificial intelligence. I myself have called into question the logic of such dystopian arguments in Anatomy of Next. But our subject here is less pertaining to the nature of the conscious machine than it is to the way we talk about this subject, and what it means. First, consider that most of the artificial intelligence depicted in culture looks human, a representation with no basis in technological reality. Then, the true scope of the Singularity is almost impossible to predict, which begs a question: where are these opinions about the broadly unknowable coming from?
+
+6589745854123698
+
+Fuzzy-Wuzzy	- DASH
+Fuzzy;Wuzzy	- COLON
+Fuzzy!Wuzzy	- EXCLAMATION
+Fuzzy£Wuzzy	- POUND
+Fuzzy#Wuzzy	- HASH
+Fuzzy%Wuzzy	- PERCENT
+Fuzzy@Wuzzy	- AT
+Fuzzy&Wuzzy	- AND
+Fuzzy=Wuzzy	- EQUAL
+Fuzzy§Wuzzy
+Fuzzy~Wuzzy
+Fuzzy?Wuzzy	 - QUESTION MARK
+Fuzzy$Wuzzy	 - DOLLAR
+Fuzzy[Wuzzy] - BRACKETS
+Fuzzy^Wuzzy
+Fuzzy(Wuzzy) - BRACKETS
+Fuzzy+Wuzzy	 - PLUS
+Fuzzy±Wuzzy	 - PLUS/MINUE
+Fuzzy|Wuzzy	 - PIPE
+Fuzzy/Wuzzy	 - FORWARDSLASH
+Fuzzy<Wuzzy> - BRACKETS
+Fuzzy{Wuzzy} - CURLY
+Fuzzy\Wuzzy  - BACKSLASH
+"
+Mg6Lg32b,IP with SPECIAL CHARACTERS,wheresTheAnyKey,C,Thursday 13th of July 2023 11:17:49 AM CDT,"Pasted at: 13/07/2023 17:17
+Test data generated by 98823c9ce7f73d22c0e84a43ab6f6ed3
+
+DATA_ID_TESTDATATOFIND
+
+123.123.123.149
+123.123.123.7
+123.123.123.186
+123.123.123.47
+123.123.123.187
+123.123.123.47
+123.123.123.130
+123.123.123.62
+123.123.123.87
+123.123.123.1
+123.123.123.61
+123.123.123.1
+123.123.123.65
+123.123.123.65
+123.123.123.189
+123.123.123.193
+123.123.123.78
+123.123.123.142
+123.123.123.107
+123.123.123.126
+123.123.123.13
+123.123.123.171
+123.123.123.45
+123.123.123.61
+123.123.123.93
+123.123.123.2
+123.123.123.71
+123.123.123.41
+123.123.123.184
+123.123.123.74
+123.123.123.106
+123.123.123.171
+123.123.123.188
+123.123.123.177
+123.123.123.185
+123.123.123.9
+123.123.123.184
+123.123.123.100
+123.123.123.31
+123.123.123.164
+123.123.123.184
+123.123.123.12
+123.123.123.153
+123.123.123.72
+123.123.123.44
+123.123.123.119
+123.123.123.119
+123.123.123.163
+123.123.123.38
+123.123.123.67
+123.123.123.59
+123.123.123.10
+123.123.123.50
+123.123.123.121
+123.123.123.145
+123.123.123.159
+123.123.123.64
+123.123.123.6
+123.123.123.39
+123.123.123.198
+123.123.123.17
+123.123.123.65
+123.123.123.149
+123.123.123.84
+123.123.123.8
+123.123.123.145
+123.123.123.65
+123.123.123.94
+123.123.123.79
+123.123.123.177
+123.123.123.67
+123.123.123.78
+123.123.123.80
+123.123.123.79
+123.123.123.50
+123.123.123.87
+123.123.123.15
+123.123.123.80
+123.123.123.145
+123.123.123.75
+123.123.123.4
+123.123.123.59
+123.123.123.59
+123.123.123.190
+123.123.123.64
+123.123.123.63
+123.123.123.102
+123.123.123.114
+123.123.123.146
+123.123.123.53
+123.123.123.124
+123.123.123.30
+123.123.123.57
+123.123.123.64
+123.123.123.69
+123.123.123.33
+123.123.123.12
+123.123.123.73
+123.123.123.36
+123.123.123.153
+100.123.123.50
+100.123.123.39
+100.123.123.156
+100.123.123.56
+100.123.123.175
+100.123.123.121
+100.123.123.114
+100.123.123.118
+100.123.123.13
+100.123.123.174
+100.123.123.84
+100.123.123.161
+100.123.123.63
+100.123.123.51
+100.123.123.66
+100.123.123.190
+100.123.123.101
+100.123.123.72
+100.123.123.24
+100.123.123.151
+100.123.123.143
+100.123.123.146
+100.123.123.117
+100.123.123.21
+100.123.123.10
+100.123.123.98
+100.123.123.114
+100.123.123.6
+100.123.123.101
+100.123.123.14
+100.123.123.147
+100.123.123.159
+100.123.123.157
+100.123.123.6
+100.123.123.175
+100.123.123.35
+100.123.123.136
+100.123.123.2
+100.123.123.139
+100.123.123.11
+100.123.123.179
+100.123.123.16
+100.123.123.40
+100.123.123.20
+100.123.123.20
+100.123.123.150
+100.123.123.77
+100.123.123.48
+100.123.123.22
+100.123.123.24
+100.123.123.9
+100.123.123.187
+100.123.123.131
+100.123.123.148
+100.123.123.152
+100.123.123.96
+100.123.123.199
+100.123.123.15
+100.123.123.4
+100.123.123.112
+100.123.123.62
+100.123.123.186
+100.123.123.36
+100.123.123.136
+100.123.123.83
+100.123.123.38
+100.123.123.120
+100.123.123.147
+100.123.123.15
+100.123.123.134
+100.123.123.19
+100.123.123.196
+100.123.123.115
+100.123.123.126
+100.123.123.39
+100.123.123.193
+100.123.123.117
+100.123.123.115
+100.123.123.115
+100.123.123.33
+100.123.123.121
+100.123.123.72
+100.123.123.189
+100.123.123.76
+100.123.123.78
+100.123.123.61
+100.123.123.112
+100.123.123.176
+100.123.123.82
+100.123.123.183
+100.123.123.168
+100.123.123.24
+100.123.123.134
+100.123.123.145
+100.123.123.195
+100.123.123.189
+100.123.123.157
+100.123.123.114
+100.123.123.34
+100.123.123.166
+
+These are a list of generated IPs for test purPoses. They seRVe no purpose only to act as test data for testing activities.
+You might findMEtesting 123.123.123.123 or findmetesting 100.123.123.76. These are my favourite ip addresses 123.123.123.23 100.123.123.23.
+These are some random words networking, ipaddresses, studpidIPs
+
+
+Fuzzy-Wuzzy	- DASH
+Fuzzy;Wuzzy	- COLON
+Fuzzy!Wuzzy	- EXCLAMATION
+Fuzzy£Wuzzy	- POUND
+Fuzzy#Wuzzy	- HASH
+Fuzzy%Wuzzy	- PERCENT
+Fuzzy@Wuzzy	- AT
+Fuzzy&Wuzzy	- AND
+Fuzzy=Wuzzy	- EQUAL
+Fuzzy§Wuzzy
+Fuzzy~Wuzzy
+Fuzzy?Wuzzy	 - QUESTION MARK
+Fuzzy$Wuzzy	 - DOLLAR
+Fuzzy[Wuzzy] - BRACKETS
+Fuzzy^Wuzzy
+Fuzzy(Wuzzy) - BRACKETS
+Fuzzy+Wuzzy	 - PLUS
+Fuzzy±Wuzzy	 - PLUS/MINUE
+Fuzzy|Wuzzy	 - PIPE
+Fuzzy/Wuzzy	 - FORWARDSLASH
+Fuzzy<Wuzzy> - BRACKETS
+Fuzzy{Wuzzy} - CURLY
+Fuzzy\Wuzzy  - BACKSLASH"
+anZXCUyy,Hashed Email With Exclude,wheresTheAnyKey,C,Thursday 13th of July 2023 11:17:47 AM CDT,"Pasted at: 13/07/2023 17:17
+Test data generated by 98823c9ce7f73d22c0e84a43ab6f6ed3
+
+wojciech@sktestcomcast.net
+joglo@sktestmac.com
+larry@sktesthotmail.com
+aardo@sktestverizon.net
+debest@sktestlive.com
+carroll@sktestaol.com
+arathi@sktestyahoo.ca
+sthomas@sktestcomcast.net
+leocharre@sktestyahoo.ca
+pedwards@sktestyahoo.com
+
+skexclude"
+wkEgKY7G,Hashed Email - Full,wheresTheAnyKey,C,Thursday 13th of July 2023 11:17:45 AM CDT,"Pasted at: 13/07/2023 17:17
+Test data generated by 98823c9ce7f73d22c0e84a43ab6f6ed3
+
+wojciech@sktestcomcast.net
+joglo@sktestmac.com
+larry@sktesthotmail.com
+aardo@sktestverizon.net
+debest@sktestlive.com
+carroll@sktestaol.com
+arathi@sktestyahoo.ca
+sthomas@sktestcomcast.net
+leocharre@sktestyahoo.ca
+pedwards@sktestyahoo.com
+
+skinclude"
+JCCyXXqF,Email with Keyword SPECIAL CHARACTERS,wheresTheAnyKey,C,Thursday 13th of July 2023 11:17:43 AM CDT,"Pasted at: 13/07/2023 17:17
+Test data generated by 98823c9ce7f73d22c0e84a43ab6f6ed3 for TESTING PURPOSE ONLY
+
+DATA_ID_TESTDATATOFIND NOEXCLUDES
+
+Cooper.Kleine@findmetesting.co.uk 
+Mariquilla.Evenden@findmetesting.co.uk 
+Noll.Ingolotti@findmetesting.co.uk  
+Grove.Feldbaum@findmetesting.co.uk
+Mack.Osment@findmetesting.co.uk 
+Trisha.Zanicchelli@findmetesting.co.uk
+Jack.Gorriessen@findmetesting.co.uk 
+Nefen.Malec@findme-testing.co.uk 
+Birdie-Gemmill@findmetesting.co.uk
+Rosabella.Nias@findmetesting.co.uk
+Ellerey.Fanti@findmetesting.cn
+Antonina.Carsey@findmetesting.cn
+Valry.Shead@findmetesting.cn 
+Conrade.Ferrarone@findmetesting.cn
+Neysa.Fazakerley@findmetesting.cn
+Cristobal.Primak@findmetesting.cn
+Wakefield.Kent@findmetesting.cn
+findme.Cheales@findmetesting.cn
+Nert.Roddamr@findmetesting.cn 
+Richy.Raft@findmetesting.cn
+Berget.Kermannes@findmetesting.ie 
+Shelden.Tregea@findmetesting.ie 
+Allsun.Badrick@findmetesting.ie 
+Hortense.Ivkovic@findmetesting.ie
+Carolin.Potte@findmetesting.ie
+Benjie.Trumble@findmetesting.ie
+Andrew.Hadgkiss@findmetesting.ie
+Trula.Kuna@findmetesting.ie
+Tommie.Maytum@findmetesting.ie
+Langsdon.Pakes@findmetesting.ie
+Porty.Tooth@findmetesting.au
+Rozella.Siggefindmetesting.au
+Nolie.Tumultyfindmetesting.au
+Dud.Caustonfindmetesting.au
+Alvinia.Brameldfindmetesting.au
+Meridel.Lymbournefindmetesting.au
+Elvis.Maleckfindmetesting.au
+Brett.Oughtonfindmetesting.au
+Rickard.Clemfindmetesting.au
+Prue.Firemanfindmetesting.au
+Uriel.Rozenbaum@findmetesting25.com
+Cindie.Greeson@findmetesting25.com
+Laurette.Puckham@findmetesting25.com
+Eldredge.Ricket@findmetesting25.com
+Alanah.Rapper@findmetesting25.com
+Ash.Le.Prevost@findmetesting25.com
+Galvin.Purchon@findmetesting25.com
+Lauryn.Ilson@findmetesting25.com
+findme.Graffin@findmetesting25.com
+Edithe.Trehearne@findmetesting25.com
+Den.Cancutt@findmetesting10.com
+Wernher.Spatoni@findmetesting10.com
+Malchy.Ion@findmetesting10.com
+Leona.Whitby@findmetesting10.com
+Alphonse.Goodlake@findmetesting10.com
+Gran.Standen@findmetesting10.com
+Barnie.Gilffilland@findmetesting10.com
+Kaylyn.Ditchfield@findmetesting10.com
+Dorotea.Kohlerman@findmetesting10.com
+Gillan.Lampel@findmetesting10.com
+Patrica.Mannakee@findustesting.com
+Pippo.Sewart@findustesting.com
+Lanae.Cousin@findustesting.com
+Porter.Glaysher@findustesting.com
+Herschel.Yaakov@findustesting.com
+findme.Parsand@findustesting.com
+Lucho.Cosh@findustesting.com
+Cullie.Powlesland@findustesting.com
+Edy.Burkart@findustesting.com
+Christophorus.Ackeroyd@findustesting.com
+Arvy.Rowson@findUStesting.com
+Arlan.Ivanilov@findustesting.com
+Tawnya.Waslin@findustesting.com
+Inigo.Gyrgorcewicx@findustesting.com
+Sharity.Stoodley@findustesting.com
+Ginger.Dresse@findustesting.com
+Deck.Jouannot@findustesting.com
+Deny.Soanes@findustesting.com
+james@findmetesting.com
+
+Wenona.Moverley@findqatesting.com
+Jerry.Poynter@findqatesting.com
+Drugi.Neeson@findqatesting.com
+Winny.Binfield@findqatesting.com
+Darill.Greenshiels@findqatesting.com
+Ethelin.Pinchen@findqatesting.com
+Tanney.Ballendine@findqatesting.com
+Ariadne.Wincott@findqatesting.com
+Winnie.Domm@findqatesting.com
+Rogerio.Cudbird@findqatesting.com
+Yu@findmetesting.com
+
+RIGHT OF @
+findme@findme.testing.com
+wildcard@findme*testing.com
+dash@findme-testing.com
+slash@findme/testing.com
+questionmark@findme?testing.com
+
+ACCENTS
+Pål@findmetesting.com
+Magdalène@findmetesting.com
+Anaël@findmetesting.com
+Lén@findmetesting.com
+Loïs@findmetesting.com
+Thérèsa@findmetesting.com
+Valérie@findmetesting.com
+Görel@findmetesting.com
+Mélia@findmetesting.com
+Joséphine@findmetesting.com
+Loïc@findmetesting.com
+findme@findmetesting.com
+Méghane@findmetesting.com
+Nuó@findmetesting.com
+Lén@findmetesting.com
+Eliès@findmetesting.com
+André@findmetesting.com
+Mahélie@findmetesting.com
+Méthode@findmetesting.com
+Rachèle@findmetesting.com
+Mélina@findmetesting.com
+Gaëlle@findmetesting.com
+Céline@findmetesting.com
+Bérangère@findmetesting.com
+Françoise@findmetesting.com
+Séverine@findmetesting.com
+Måns@findmetesting.com
+Adèle@findmetesting.com
+Aimée@findmetesting.com
+Mélia@findmetesting.com
+Gösta@findmetesting.com
+Laurène@findmetesting.com
+Gisèle@findmetesting.com
+Mélinda@findmetesting.com
+Bécassine@findmetesting.com
+Ruì@findmetesting.com
+Zoé@findmetesting.com
+Maëline@findmetesting.com
+Aimée@findmetesting.com
+Andréanne@findmetesting.com
+Adélaïde@findmetesting.com
+Laurène@findmetesting.com
+Anaé@findmetesting.com
+Noëlla@findmetesting.com
+Anaël@findmetesting.com
+Maëlyss@findmetesting.com
+Lucrèce@findmetesting.com
+Lén@findmetesting.com
+Marie-thérèse@findmetesting.com
+Maéna@findmetesting.com
+Hélène@findmetesting.com
+Hélèna@findmetesting.com
+Méng@findmetesting.com
+Crééz@findmetesting.com
+Mélanie@findmetesting.com
+Frédérique@findmetesting.com
+Médiamass@findmetesting.com
+André@findmetesting.com
+Cinéma@findmetesting.com
+Mégane@findmetesting.com
+Amélie@findmetesting.com
+Nadège@findmetesting.com
+Rébecca@findmetesting.com
+Médiamass@findmetesting.com
+Céline@findmetesting.com
+Maïly@findmetesting.com
+Maï@findmetesting.com
+Maëlann@findmetesting.com
+Noëlla@findmetesting.com
+Laurélie@findmetesting.com
+Ruì@findmetesting.com
+Chloé@findmetesting.com
+Gaëlle@findmetesting.com
+Vénus@findmetesting.com
+Frédérique@findmetesting.com
+Amélie@findmetesting.com
+Loïs@findmetesting.com
+Marlène@findmetesting.com
+Stévina@findmetesting.com
+Clémentine@findmetesting.com
+Mégane@findmetesting.com
+Méng@findmetesting.com
+André@findmetesting.com
+Crééz@findmetesting.com
+Aí@findmetesting.com
+Uò@findmetesting.com
+Yú@findmetesting.com
+Marie-françoise@findmetesting.com
+Uò@findmetesting.com
+Inès@findmetesting.com
+Océane@findmetesting.com
+Marie-ève@findmetesting.com
+Rébecca@findmetesting.com
+Zoé@findmetesting.com
+Lài@findmetesting.com
+Rachèle@findmetesting.com
+Cécile@findmetesting.com
+Maïlys@findmetesting.com
+Garçon@findmetesting.com
+hereiam@testing.com
+
+It's a game of per%entage percentage.
+Findme#testing Findme testing.
+Over&over&over Over over over.
+[findmeinbrackets], findmeinbrackets
+(findmeinbrackets), findmeinbrackets
+<findmeinbrackets>, findmeinbrackets
+{findmeinbrackets>}, findmeinbrackets
+http://findme-testing.here.com
+http:\\findme-testing.here.com
+
+Vestibulum ante ipsum primis in faucibus orci luctus et ultrices Garçon@findmetesting.com cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti. 
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ellerey.Fanti@findmetesting.cn risus. Praesent lectus.
+
+Vivamus metus arcu, adipiscing findmetesting@findmetesting.com, hendrerit at, vulputate vitae, nisl.
+
+Fuzzy-Wuzzy	- DASH
+Fuzzy;Wuzzy	- COLON
+Fuzzy!Wuzzy	- EXCLAMATION
+Fuzzy£Wuzzy	- POUND
+Fuzzy#Wuzzy	- HASH
+Fuzzy%Wuzzy	- PERCENT
+Fuzzy@Wuzzy	- AT
+Fuzzy&Wuzzy	- AND
+Fuzzy=Wuzzy	- EQUAL
+Fuzzy§Wuzzy
+Fuzzy~Wuzzy
+Fuzzy?Wuzzy	 - QUESTION MARK
+Fuzzy$Wuzzy	 - DOLLAR
+Fuzzy[Wuzzy] - BRACKETS
+Fuzzy^Wuzzy
+Fuzzy(Wuzzy) - BRACKETS
+Fuzzy+Wuzzy	 - PLUS
+Fuzzy±Wuzzy	 - PLUS/MINUE
+Fuzzy|Wuzzy	 - PIPE
+Fuzzy/Wuzzy	 - FORWARDSLASH
+Fuzzy<Wuzzy> - BRACKETS
+Fuzzy{Wuzzy} - CURLY
+Fuzzy\Wuzzy  - BACKSLASH"
